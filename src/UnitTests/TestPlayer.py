@@ -30,8 +30,8 @@ class TestPlayer(unittest.TestCase):
         self.__cardsHandOne = Deck(deck=cardsHandOne)
         self.__cardsHandTwo = Deck(deck=cardsHandTwo)
         
-        self.__handOne = Player(name="Player one", deck=Deck(cardsHandOne))
-        self.__handTwo = Player(name="Player two", deck=Deck(cardsHandTwo))
+        self.__handOne = Player(name="Player one", deck=Deck(deck=cardsHandOne))
+        self.__handTwo = Player(name="Player two", deck=Deck(deck=cardsHandTwo))
             
     def tearDown(self):
         self.__handOne = None
@@ -42,14 +42,20 @@ class TestPlayer(unittest.TestCase):
         
         for i in range(0,3):
             self.__handOne.PutCard()
-            visibleCards.append(self.__handOne.DrawCard())
+            visibleCards.append(self.__cardsHandOne.DrawCard())
             self.__handTwo.PutCard()
-        
-        self.assertEqual(len(visibleCards), self.__handOne.VisibleCards, "Visible card count is incorrect")
+            
+            self.__handOne.EndTurn()
+            self.__handTwo.EndTurn()
+            
+        expected = len(visibleCards)
+        actual = len(self.__handOne.VisibleCards)
+            
+        self.assertEqual(expected, actual, "Visible card count is incorrect")
         
         for i in range(0,1):
-            message = "Card %d is incorrect." % str(i)
-            self.assertEquals(visibleCards[i], self.__handOne.VisibleCards, message)
+            message = "Card %d is incorrect." % i
+            self.assertEquals(visibleCards[i], self.__handOne.VisibleCards[i], message)
         
     def testPutCard(self):
         self.__handOne.PutCard()
@@ -60,8 +66,8 @@ class TestPlayer(unittest.TestCase):
         self.assertEquals(self.__cardsHandOne.DrawCard(), card, "PutCard did not take first card in deck")
     
     def testActionPoints(self):
-        expectedStart = 3
-        expectedAfterPutCard = 2
+        expectedStart = Player.MAX_ACTION_POINTS
+        expectedAfterPutCard = expectedStart - Player.CARD_COST
         
         self.assertEqual(expectedStart, self.__handOne.ActionPoints, "Not correct number of ActionPoints at start")
               
@@ -81,6 +87,7 @@ class TestPlayer(unittest.TestCase):
         expected = 7
         
         self.__handOne.PutCard()
+        self.__handOne.EndTurn()
         self.__handOne.PutCard()
         
         self.assertEqual(expected, self.__handOne.CardsLeft, "Number of cards left not decreased correct")
