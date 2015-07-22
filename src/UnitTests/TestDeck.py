@@ -24,14 +24,14 @@ class TestDeck(unittest.TestCase):
             shuffledCards[count] = deck.DrawCard()
             count += 1
         
-        same = 0
+        different = 0
         for i in range(0, len(cards)):
-            if cards[i].Name == shuffledCards[i].Name:
-                same += 1
+            if cards[i].Name != shuffledCards[i].Name:
+                different += 1
                 
-        errorMsg = "Deck not shuffled properly. Number of cards in the same place: %d" % same
+        errorMsg = "Deck not shuffled properly. Number of cards not changed placement: %d" % different
         
-        self.assertFalse(same > 2, errorMsg)
+        self.assertFalse(different < 2, errorMsg)
         
         pass
     

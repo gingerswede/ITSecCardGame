@@ -88,14 +88,11 @@ class Card(object):
     
     @HP.setter
     def HP(self, cardHp):
-        if type(cardHp) == int and cardHp > 0:
+        if type(cardHp) == int:
             self.__hp = cardHp
             if self.__hp < 1:
                 self.__hp = 0
                 self.__isAlive = False
-        elif cardHp < 0:
-            self.__hp = 0
-            self.__isAlive = False
         else:
             raise TypeError
         

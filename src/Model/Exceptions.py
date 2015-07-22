@@ -6,6 +6,10 @@ Created on 22 jul 2015
 
 class OutOfMovesError(Exception):
     
-    def __init__(self, args):
+    def __init__(self, args="OutOfMovesError"):
         self.message = args
-        
+
+class IncorrectAttackerError(Exception):
+    
+    def __init__(self, args="IncorrectAttackerError"):
+        self.message = args

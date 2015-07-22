@@ -7,7 +7,7 @@ from Model.Deck import Deck
 
 from argparse import ArgumentError
 
-from Model.Exceptions import OutOfMovesError
+from Model.Exceptions import OutOfMovesError, IncorrectAttackerError
 
 class Player(object):
     DECK = 'deck'
@@ -47,19 +47,40 @@ class Player(object):
         else:
             return False
     
+    @property
+    def hand(self):
+        return self.__hand
+        
     def DrawCard(self):
-        if self.CanDrawCard and len(self.VisibleCards) <= self.MAX_VISIBLE_CARDS:
-            self.__visibleCards.append(self.__deck.DrawCard())            
+        if self.CanDrawCard and len(self.VisibleCards) <= self.MAX_VISIBLE_CARDS and self.__actionPoints >= self.CARD_COST:
+            self.__hand.append(self.__deck.DrawCard())
+            self.__actionPoints -= self.CARD_COST
         else:
             raise OutOfMovesError
     
-    def PutCard(self):
-        if not self.__deck.OutOfCards and self.ActionPoints >= self.CARD_COST:
+    def PutCard(self, card):
+        if self.ActionPoints >= self.CARD_COST and card in self.__hand:
             self.__actionPoints -= self.CARD_COST
-            self.__visibleCards.append(self.__deck.DrawCard())
+            self.__hand.remove(card)
+            self.__visibleCards.append(card)
     
     def EndTurn(self):
         self.__actionPoints = self.MAX_ACTION_POINTS
+        
+    def Attack(self, defender, attacker):
+        if attacker in self.__visibleCards:
+            if self.ActionPoints > 0:
+                self.__actionPoints -= self.ATTACK_COST
+                return defender.defend(attacker)
+            else:
+                raise OutOfMovesError
+        else:
+            raise IncorrectAttackerError
+        
+    def ClearBoard(self):
+        for c in self.__visibleCards:
+            if not c.IsAlive:
+                self.__visibleCards.remove(c)
         
     def NewGame(self, deck):
         self.__deck = deck
