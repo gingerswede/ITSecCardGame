@@ -5,8 +5,6 @@ Created on 21 jul 2015
 '''
 from Model.Deck import Deck
 
-from argparse import ArgumentError
-
 from Model.Exceptions import OutOfMovesError, IncorrectAttackerError
 
 class Player(object):
@@ -21,12 +19,19 @@ class Player(object):
     __visibleCards = None
     __hand = None
     __canDrawCard = None
+    __name = "Default player"
     
     def __init__(self, *args, **kwargs):
         if self.DECK in kwargs:
             self.NewGame(kwargs[self.DECK])
-        else:
-            raise ArgumentError
+        
+    @property
+    def Name(self):
+        return self.__name
+    
+    @Name.setter
+    def Name(self, name):
+        self.__name = str(name)
     
     @property
     def ActionPoints(self):
