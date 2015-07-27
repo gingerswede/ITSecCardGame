@@ -48,12 +48,13 @@ class Card(object):
     
     @Image.setter
     def Image(self, cardImage):
-        pattern = re.compile("^(https?:\/\/)([\da-z\.-]+)\.[a-z]*")
-        if type(cardImage) == str and pattern.match(cardImage):
-            self.__image = cardImage
+        #pattern = re.compile("^(https?:\/\/)([\da-z\.-]+)\.[a-z]*")
+        #if type(cardImage) == str and pattern.match(cardImage):
+        self.__image = cardImage
             
-        else:
-            raise TypeError
+        #else:
+        #    raise TypeError
+        
 
     @property
     def AP(self):

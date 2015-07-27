@@ -15,6 +15,7 @@ class MasterController(object):
     VIEW_AREA = "viewarea"
     BACKGROUND_COLOR = "chartreuse4"
     DECK_COLOR = "purple4"
+    RED = "red4"
     
     __viewArea = None
     __menuArea = None

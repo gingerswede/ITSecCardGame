@@ -5,14 +5,15 @@ Created on 21 jul 2015
 '''
 from Model.Deck import Deck
 
-from Model.Exceptions import OutOfMovesError, IncorrectAttackerError
+from Model.Exceptions import OutOfMovesError, IncorrectAttackerError, MaxHandSize, CardNotInHand
 
 class Player(object):
     DECK = 'deck'
     CARD_COST = 2
     ATTACK_COST = 1
-    MAX_ACTION_POINTS = 3
+    MAX_ACTION_POINTS = 1000
     MAX_VISIBLE_CARDS = 4
+    MAX_HAND_SIZE = 5
     
     __actionPoints = None
     __deck = None
@@ -48,7 +49,10 @@ class Player(object):
     @property
     def CanDrawCard(self):
         if self.__canDrawCard and not self.__deck.OutOfCards:
-            return True
+            if len(self.hand) < self.MAX_HAND_SIZE:
+                return True
+            
+            raise MaxHandSize
         else:
             return False
     
@@ -64,11 +68,15 @@ class Player(object):
             raise OutOfMovesError
     
     def PutCard(self, card):
-        if self.ActionPoints >= self.CARD_COST and card in self.__hand:
-            self.__actionPoints -= self.CARD_COST
-            self.__hand.remove(card)
-            self.__visibleCards.append(card)
-    
+        if self.ActionPoints >= self.CARD_COST:
+            if card not in self.__hand:
+                self.__actionPoints -= self.CARD_COST
+                self.__hand.remove(card)
+                self.__visibleCards.append(card)
+            else:
+                raise CardNotInHand
+        else:
+            raise OutOfMovesError
     def EndTurn(self):
         self.__actionPoints = self.MAX_ACTION_POINTS
         

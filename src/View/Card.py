@@ -4,46 +4,62 @@ Created on 22 jul 2015
 @author: Emil
 '''
 import Model
+
 import Tkinter as tk
+from Tkconstants import BOTH, RIDGE, LEFT, FLAT, RIGHT, N, NE, SUNKEN, S, GROOVE, E, W, NW, SW
+
+import urllib, io
+from PIL import Image, ImageTk
+
 
 class Card(object):
     
-    __card = None
-    __visible = False
+    __healthPoints = None
+    __attackPoints = None
+    __defensePoints = None
+    __imageLink = None
+    __description = None
+    __name = None
+    
     __root = None
     
-    def __init__(self, card):
+    __image = None
+    
+    def __init__(self, card, controller):
         if isinstance(card, Model.Card.Card):
+            self.__controller = controller
             self.__card = card
-            self.__visible = False
+            self.__attackPoints = card.AP
+            self.__defensePoints = card.DP
+            self.__healthPoints = card.HP
+            self.__description = card.Description
+            self.__imageLink = card.Image
+            self.__name = card.Name
             
         else:
             raise TypeError
     
-    @property
-    def Visible(self):
-        return self.__visible
-    
-    @Visible.setter 
-    def Visible(self, visible):
-        if type(visible) == bool:
-            self.__visible = visible
-        else:
-            return TypeError
+    def Draw(self, root, height, width):
+        base = tk.Frame(root, height=height, width=width)
+        base.bind("<Button-1>", lambda card=self.__card:self.__controller.PlayCard(card))
+        base.pack(side=LEFT, padx=5)
         
-    @property
-    def HealthPoints(self):
-        return self.__card.HP
-    
-    @property
-    def AttackPoints(self):
-        return self.__card.AP
-    
-    @property
-    def DefensePoints(self):
-        return self.__card.DP
-    
-    def RenderCard(self):
-        self.__root = tk.Frame(width=300, height=400)
+        title = tk.Label(base, text=self.__name, background="green")
+        title.bind("<Button-1>", lambda card=self.__card:self.__controller.PlayCard(card))
+        title.pack()
+                
+        img = ImageTk.PhotoImage(Image.open(self.__imageLink))
+        self.__img = img
+        imgLabel = tk.Label(base, image=img)
+        imgLabel.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
+        imgLabel.pack()
         
-        return self.__root
+        cardInformationText = "AP: %d | DP: %d | HP: %d" % (self.__attackPoints, self.__defensePoints, self.__healthPoints)
+        cardInformationFrame = tk.Label(base, text=cardInformationText, width=width)
+        cardInformationFrame.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
+        cardInformationFrame.pack()
+        
+        
+        description = tk.Label(base, text=self.__description, wraplength=width, width=width)
+        description.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
+        description.pack()
