@@ -41,11 +41,11 @@ class Card(object):
     
     def Draw(self, root, height, width):
         base = tk.Frame(root, height=height, width=width)
-        base.bind("<Button-1>", lambda card=self.__card:self.__controller.PlayCard(card))
-        base.pack(side=LEFT, padx=5)
+        base.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
+        #base.pack(side=LEFT, padx=5)
         
         title = tk.Label(base, text=self.__name, background="green")
-        title.bind("<Button-1>", lambda card=self.__card:self.__controller.PlayCard(card))
+        title.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
         title.pack()
                 
         img = ImageTk.PhotoImage(Image.open(self.__imageLink))
@@ -63,3 +63,4 @@ class Card(object):
         description = tk.Label(base, text=self.__description, wraplength=width, width=width)
         description.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
         description.pack()
+        return base

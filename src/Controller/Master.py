@@ -3,12 +3,13 @@ Created on 22 jul 2015
 
 @author: Emil
 '''
-import Tkinter as tk
+import Tkinter as tk, pygame
 from Tkconstants import NW, BOTH
 
 from View import Menu, GlobalFunc
 from Controller import Menu as MenuController, Game as GameController
 from Model import Player
+from Model.Sounds import Sounds as Sound
 
 
 class MasterController(object):
@@ -26,6 +27,9 @@ class MasterController(object):
     __root = None
     __player = None
     
+    __mixer = None
+    __sounds = None
+    
     def __init__(self, root):
         self.__player = Player.Player()
         
@@ -34,10 +38,10 @@ class MasterController(object):
         self.__menuArea = tk.Frame(root, width=root.winfo_screenwidth())
         self.__menuArea.pack(anchor=NW)
         
-        background = tk.Frame(root, width=root.winfo_screenwidth(), height=root.winfo_screenheight(), background="chartreuse4")
+        background = tk.Frame(root, width=root.winfo_screenwidth(), height=root.winfo_screenheight(), background=self.BACKGROUND_COLOR)
         background.pack(fill=BOTH, expand=True, pady=5, padx=5)
         
-        self.__viewArea = tk.Frame(background, background="chartreuse4")
+        self.__viewArea = tk.Frame(background, background=self.BACKGROUND_COLOR)
         self.__viewArea.pack(pady=10, padx=10, fill=BOTH, expand=True)
         
         self.__menuController = MenuController.MenuController(self.__viewArea, self.__player, self)
@@ -45,12 +49,27 @@ class MasterController(object):
         
         self.__menuController.DisplayBasicMenu(self.__menuArea)
         
-        root.bind('<Escape>', lambda e, root=self.__viewArea: self.__menuController.OpenMainMenu(e, root))
+        root.bind('<Escape>', lambda e, root=self.__viewArea: self.OpenMenu(e, root))
         root.bind('<x>', self.CloseApplication)
         
-        self.__menuController.OpenMainMenu(None, self.__viewArea)
+        self.__sounds = Sound()
+        self.__mixer = pygame.mixer
+        self.__mixer.init()
+        
+        self.OpenMenu(None)
+        
+    def OpenMenu(self, e):
+        self.__mixer.stop()
+        sound = self.__mixer.Sound(self.__sounds.MenuMusic)
+        sound.play(loops=-1)
+        
+        self.__menuController.OpenMainMenu(e, self.__viewArea)
         
     def StartNewGame(self, event):
+        self.__mixer.stop()
+        sound = self.__mixer.Sound(self.__sounds.GamePlayMusic)
+        sound.play(loops=-1)
+        
         self.__gameController.StartNewGame(event)
         
     def CloseApplication(self, event=None):

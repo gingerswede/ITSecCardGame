@@ -14,4 +14,7 @@ def CloseWindow(event, root):
 
 def RemoveAllChildren(frame):
     for child in frame.winfo_children():
-        child.destroy()
+        try:
+            child.destroy()
+        except:
+            pass

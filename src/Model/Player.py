@@ -69,7 +69,7 @@ class Player(object):
     
     def PutCard(self, card):
         if self.ActionPoints >= self.CARD_COST:
-            if card not in self.__hand:
+            if card in self.__hand:
                 self.__actionPoints -= self.CARD_COST
                 self.__hand.remove(card)
                 self.__visibleCards.append(card)

@@ -68,7 +68,7 @@ class Menu(object):
     def AddMenuText(self, menuArea):
         
         label = tk.Label(menuArea, text=self.INFO_MENU, justify=LEFT)
-        label.bind("<Button-1>", self.DisplayMenu)
+        label.bind("<Button-1>", self.__controller.OpenMenu)
         label.pack(side=LEFT, padx=5)
         
         labelClose = tk.Label(menuArea, text=self.INFO_EXIT, justify=LEFT)
@@ -110,5 +110,5 @@ class Menu(object):
         
         labelBack = tk.Label(settings, text=self.BACK, background="red4")
         labelBack.config(font=("Arial Black", 16, BOLD))
-        labelBack.bind("<Button-1>", self.DisplayMenu)
+        labelBack.bind("<Button-1>", self.__controller.OpenMenu)
         labelBack.pack(fill=X)

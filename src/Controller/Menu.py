@@ -16,6 +16,7 @@ class MenuController(object):
     
     __masterController = None
     
+    
     MAIN_MENU = 'mainmenu'
     SETTINGS_MENU = 'settingsmenu'
     
@@ -28,6 +29,9 @@ class MenuController(object):
         
     def DisplayBasicMenu(self, root):
         self.__menuView.AddMenuText(root)
+        
+    def OpenMenu(self, *args, **kwargs):
+        self.__masterController.OpenMenu(args)
         
     def OpenMainMenu(self, event, root):
         GlobalFunc.RemoveAllChildren(root)

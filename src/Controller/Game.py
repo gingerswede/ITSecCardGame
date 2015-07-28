@@ -10,6 +10,8 @@ from View import Game as GameView
 from Model.Exceptions import OutOfMovesError, MaxHandSize, CardNotInHand
 from Model.Deck import Deck
 from Model.Card import Card
+from Model.Sounds import Sounds as Sound
+from pygame import mixer
 
 class GameController(object):
     
@@ -18,11 +20,16 @@ class GameController(object):
     __playerTwo = None
     __ai = None
     
+    __attacker = None
+    __defender = None
+    
     __imgPath = None
     
     __masterController = None
     
     __gameView = None
+    
+    __sounds = None
     
     def __init__(self, root, player, masterController):
         self.__root = root
@@ -30,7 +37,7 @@ class GameController(object):
         self.__masterController = masterController
         self.__gameView = GameView.GameView(root, self)
         self.__imgPath = os.path.join(os.path.abspath(os.getcwd()), "..", "img")
-        print self.__imgPath
+        self.__sounds = Sound()
         
     def StartNewGame(self, event):
         #TODO! Fix before release
@@ -46,7 +53,9 @@ class GameController(object):
             
         p1d = Deck(deck=cardsHandOne)
         p1d.Shuffle()
-            
+        
+        self.PlaySound(self.__sounds.Shuffle)
+        
         self.__playerOne = Model.Player.Player(deck=p1d)
         self.__playerTwo = Model.Player.Player(deck=Deck(deck=cardsHandTwo))
         self.__gameView.StartNewGame(event, self.__playerOne, self.__playerTwo)
@@ -55,6 +64,7 @@ class GameController(object):
         self.__gameView.DisplayCardInfo(card)
         
     def SetAttackerDefender(self, card):
+        self.PlaySound(self.__sounds.Click)
         if card in self.__playerOne.hand:
             self.__attacker = card
         elif card in self.__playerTwo.hand:
@@ -66,11 +76,18 @@ class GameController(object):
     def DrawCard(self):
         try:
             self.__playerOne.DrawCard()
+            self.PlaySound(self.__sounds.CardFlip)
             self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
         except MaxHandSize:
             self.__gameView.MaxHandSize()
+            
+    def PlaySound(self, fileName):
+        print fileName
+        mixer.init()
+        sound = mixer.Sound(fileName)
+        sound.play()
             
     def EndTurn(self):
         self.__playerOne.EndTurn()
@@ -79,9 +96,13 @@ class GameController(object):
         
     def PlayCard(self, card):
         try:
-            self.__playerOne.PutCard(card)
-            self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
-            self.__gameView.ResetInformation()
+            if card in self.__playerOne.hand:
+                self.__playerOne.PutCard(card)
+                self.PlaySound(self.__sounds.CardPlace)
+                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+                self.__gameView.ResetInformation()
+            elif card in self.__playerOne.VisibleCards:
+                self.SetAttackerDefender(card)
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
         except CardNotInHand:
@@ -95,6 +116,9 @@ class GameController(object):
                 self.__gameView.UpdateOpponentVisibleHand(self.__playerTwo.hand)
             else:
                 self.__gameView.UpdateOwnVisibleHand(self.__playerOne.hand)
+                
+            self.__attacker = None
+            self.__defender = None
             
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
