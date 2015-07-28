@@ -5,13 +5,13 @@ Created on 21 jul 2015
 '''
 from Model.Deck import Deck
 
-from Model.Exceptions import OutOfMovesError, IncorrectAttackerError, MaxHandSize, CardNotInHand
+from Model.Exceptions import OutOfMovesError, IncorrectAttackerError, MaxHandSize, CardNotInHand, MaxVisibleHandSize
 
 class Player(object):
     DECK = 'deck'
     CARD_COST = 2
     ATTACK_COST = 1
-    MAX_ACTION_POINTS = 1000
+    MAX_ACTION_POINTS = 3
     MAX_VISIBLE_CARDS = 4
     MAX_HAND_SIZE = 5
     
@@ -70,11 +70,15 @@ class Player(object):
     def PutCard(self, card):
         if self.ActionPoints >= self.CARD_COST:
             if card in self.__hand:
-                self.__actionPoints -= self.CARD_COST
-                self.__hand.remove(card)
-                self.__visibleCards.append(card)
+                if len(self.__visibleCards) < self.MAX_VISIBLE_CARDS:
+                    self.__actionPoints -= self.CARD_COST
+                    self.__hand.remove(card)
+                    self.__visibleCards.append(card)
+                else:
+                    raise MaxVisibleHandSize
             else:
                 raise CardNotInHand
+            
         else:
             raise OutOfMovesError
     def EndTurn(self):

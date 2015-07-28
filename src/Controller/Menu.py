@@ -5,6 +5,7 @@ Created on 22 jul 2015
 '''
 import View
 from View import GlobalFunc
+import Model.Credits
 
 class MenuController(object):
     
@@ -43,3 +44,21 @@ class MenuController(object):
     
     def StartNewGame(self, event=None):
         self.__masterController.StartNewGame(event)
+        
+    def Credits(self, *args, **kwargs):
+        self.__masterController.ShowCredits()
+        
+    def ShowCredits(self):
+        credits = Model.Credits.Credits()
+        self.__menuView.ShowCredits(credits)
+    
+    def ShowSettings(self):
+        self.__menuView.ShowSettings(self.__masterController.Settings)
+        
+    def MusicOn(self, frame):
+        self.__masterController.Settings.Music = True
+        self.__masterController.ShowSettings()
+        
+    def MusicOff(self, frame):
+        self.__masterController.Settings.Music = False
+        self.__masterController.ShowSettings()

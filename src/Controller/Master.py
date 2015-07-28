@@ -8,7 +8,7 @@ from Tkconstants import NW, BOTH
 
 from View import Menu, GlobalFunc
 from Controller import Menu as MenuController, Game as GameController
-from Model import Player
+from Model import Player, Settings
 from Model.Sounds import Sounds as Sound
 
 
@@ -29,11 +29,14 @@ class MasterController(object):
     
     __mixer = None
     __sounds = None
+    __settings = None
     
     def __init__(self, root):
         self.__player = Player.Player()
         
         self.__root = root
+        
+        self.__settings = Settings.Settings()
         
         self.__menuArea = tk.Frame(root, width=root.winfo_screenwidth())
         self.__menuArea.pack(anchor=NW)
@@ -58,19 +61,44 @@ class MasterController(object):
         
         self.OpenMenu(None)
         
+    def ShowCredits(self, *args, **kwargs):
+        self.__mixer.stop()
+        
+        if self.__settings.Music:
+            sound = self.__mixer.Sound(self.__sounds.EndCredit)
+            sound.play(loops=-1)
+        
+        self.__menuController.ShowCredits()
+        
+    def ShowSettings(self, *args, **kwargs):
+        self.__mixer.stop()
+        
+        if self.__settings.Music:
+            sound = self.__mixer.Sound(self.__sounds.MenuMusic)
+            sound.play(loops=-1)
+            
+        self.__menuController.ShowSettings()
+        
     def OpenMenu(self, e):
         self.__mixer.stop()
-        sound = self.__mixer.Sound(self.__sounds.MenuMusic)
-        sound.play(loops=-1)
+        
+        if self.__settings.Music:
+            sound = self.__mixer.Sound(self.__sounds.MenuMusic)
+            sound.play(loops=-1)
         
         self.__menuController.OpenMainMenu(e, self.__viewArea)
         
     def StartNewGame(self, event):
         self.__mixer.stop()
-        sound = self.__mixer.Sound(self.__sounds.GamePlayMusic)
-        sound.play(loops=-1)
+        if self.__settings.Music:
+            sound = self.__mixer.Sound(self.__sounds.GamePlayMusic)
+            sound.play(loops=-1)
         
         self.__gameController.StartNewGame(event)
         
     def CloseApplication(self, event=None):
         GlobalFunc.CloseWindow(event, self.__root)
+        
+    @property
+    def Settings(self):
+        return self.__settings

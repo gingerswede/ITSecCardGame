@@ -34,6 +34,9 @@ class GameView(object):
     def MaxHandSize(self):
         self.__boardView.AddInformation("Maximum hand size reached.\nPlease play a card if possible.")
         
+    def MaxVisibleHandSize(self):
+        self.__boardView.AddInformation("Maximum amount of visible cards reached.")
+        
     def RefreshBoard(self, playerOne, playerTwo):
         self.__boardView.RefreshBoard(playerOne, playerTwo)            
         

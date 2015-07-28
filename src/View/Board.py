@@ -44,8 +44,8 @@ class Board(object):
         self.__root = root
         self.__controller = controller
         
-        self.__cardHeight = 230
-        self.__cardWidth = 160
+        self.__cardHeight = 260
+        self.__cardWidth = 180
         self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
         
         self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
@@ -85,10 +85,6 @@ class Board(object):
         self.__playerInformationArea.config(background=Controller.Master.MasterController.BACKGROUND_COLOR, borderwidth=3)
         self.__playerInformationArea.pack(side=RIGHT, padx=25)
         
-        endTurnButton = tk.Button(self.__playerInformationArea, text="End turn")
-        endTurnButton.bind("<Button-1>", lambda e:self.__controller.EndTurn())
-        endTurnButton.pack(anchor=S, pady=25)
-        
         self.DrawCards(self.__handCardArea, player.hand, player.MAX_HAND_SIZE)
         
         self.DrawCards(self.__cardAreaPlayerOne, player.VisibleCards, player.MAX_VISIBLE_CARDS)
@@ -102,6 +98,10 @@ class Board(object):
         self.GenerateTextPair(self.PLAYER_INFO_ACTION_POINTS, player.ActionPoints, self.__playerInformationArea)
         self.GenerateTextPair(self.PLAYER_INFO_CARDS_LEFT, player.CardsLeft, self.__playerInformationArea)
         
+        endTurnButton = tk.Button(self.__playerInformationArea, text="End turn")
+        endTurnButton.bind("<Button-1>", lambda e:self.__controller.EndTurn())
+        endTurnButton.pack(anchor=S, pady=25)
+        
     
     def DrawCards(self, frame, cards, maxFrames):
         GlobalFunc.RemoveAllChildren(frame)
@@ -112,9 +112,8 @@ class Board(object):
             cardSpot.pack(side=LEFT, pady=10, padx=10, fill=NONE)
             cardSpot.pack_propagate(0)
             card = Card(c, self.__controller)
-            cardDrawn = card.Draw(cardSpot, self.__cardHeight, self.__cardWidth)
-            cardDrawn.config(width=self.__cardWidth)
-            cardDrawn.pack(side=LEFT, expand=0, fill=NONE)
+            #cardDrawn = 
+            card.Draw(cardSpot, self.__cardHeight, self.__cardWidth)
             
             cardSpot.bind("<Enter>", lambda e, area=cardSpot:self.MouseEnterArea(area))
             cardSpot.bind("<Leave>", lambda e, area=cardSpot:self.MouseLeaveArea(area))
@@ -139,7 +138,7 @@ class Board(object):
         GlobalFunc.RemoveAllChildren(self.__messageArea)
         information = tk.Frame(self.__messageArea, background=Controller.Master.MasterController.RED, borderwidth=5, relief=RIDGE)
         information.pack(fill=BOTH)
-        label = tk.Label(information, text=informationText, background=Controller.Master.MasterController.RED)
+        label = tk.Label(information, text=informationText, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
         label.config(font=("Arial Black", 16, BOLD))
         label.pack()
         

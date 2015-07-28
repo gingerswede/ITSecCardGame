@@ -24,3 +24,8 @@ class CardNotInHand(Exception):
     def __init__(self, args="CardNotInHand"):
         self.message = args
         
+class MaxVisibleHandSize(Exception):
+    
+    def __init__(self, args="MaxVisibleHandSize"):
+        self.message = args
+        

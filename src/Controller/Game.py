@@ -7,11 +7,12 @@ Created on 22 jul 2015
 import Model, random, os
 
 from View import Game as GameView
-from Model.Exceptions import OutOfMovesError, MaxHandSize, CardNotInHand
+from Model.Exceptions import OutOfMovesError, MaxHandSize, CardNotInHand, MaxVisibleHandSize
 from Model.Deck import Deck
 from Model.Card import Card
 from Model.Sounds import Sounds as Sound
 from pygame import mixer
+import Controller.AI as AI
 
 class GameController(object):
     
@@ -45,20 +46,23 @@ class GameController(object):
         cardsHandTwo = [None] * 9
         
         for i in range(0, 9):
-            cardHandOne = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(6,9), random.randint(2,3), random.randint(3,7))
-            cardHandTwo = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(4,7), random.randint(3,5), random.randint(3,7))
+            cardHandOne = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(6,9), random.randint(6,9), random.randint(5,7))
+            cardHandTwo = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(6,9), random.randint(6,9), random.randint(5,7))
             
             cardsHandOne[i] = cardHandOne
             cardsHandTwo[i] = cardHandTwo
             
         p1d = Deck(deck=cardsHandOne)
         p1d.Shuffle()
+        p2d = Deck(deck=cardsHandTwo)
+        p2d.Shuffle()
         
         self.PlaySound(self.__sounds.Shuffle)
         
         self.__playerOne = Model.Player.Player(deck=p1d)
-        self.__playerTwo = Model.Player.Player(deck=Deck(deck=cardsHandTwo))
+        self.__playerTwo = Model.Player.Player(deck=p2d)
         self.__gameView.StartNewGame(event, self.__playerOne, self.__playerTwo)
+        self.__ai = AI.AI(self.__playerTwo)
         
     def DisplayCardInfo(self, event, card):
         self.__gameView.DisplayCardInfo(card)
@@ -84,15 +88,19 @@ class GameController(object):
             self.__gameView.MaxHandSize()
             
     def PlaySound(self, fileName):
-        print fileName
         mixer.init()
         sound = mixer.Sound(fileName)
         sound.play()
             
     def EndTurn(self):
         self.__playerOne.EndTurn()
+        self.__ai.MakeMove(self.__playerOne)
+        self.__playerOne.ClearBoard()
+        self.__playerTwo.ClearBoard()
         self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         self.__gameView.ResetInformation()
+        for c in self.__playerTwo.hand:
+            print c.Name
         
     def PlayCard(self, card):
         try:
@@ -106,7 +114,9 @@ class GameController(object):
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
         except CardNotInHand:
-            self.__gameView.CardNotInHand()    
+            self.__gameView.CardNotInHand()
+        except MaxVisibleHandSize:
+            self.__gameView.MaxVisibleHandSize()
     
     def PerformBattle(self):
         try:
