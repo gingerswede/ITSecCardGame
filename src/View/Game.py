@@ -5,10 +5,6 @@ Created on 24 jul 2015
 '''
 from View import GlobalFunc
 from View.Board import Board
-from Tkconstants import BOTH, RIDGE
-
-import Tkinter as tk
-import Controller
 
 class GameView(object):
     

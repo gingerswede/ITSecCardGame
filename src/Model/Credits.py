@@ -19,7 +19,11 @@ class Credits(object):
                                "deraj (https://www.freesound.org/people/deraj/)", 
                                "f4ngy (https://www.freesound.org/people/f4ngy/)"]
         self.__source = ["Emil Carlsson (https://github.com/gingerswede)"]
-        self.__images = []
+        self.__images = ["Wikipedia (http://www.wikipedia.org/)",
+                         "Little Visuals (http://littlevisuals.co/)",
+                         "Pixabay (https://pixabay.com/)",
+                         "Ryan Somma (https://www.flickr.com/photos/ideonexus/)",
+                         "Edwind Richzendy Contreras Soto (https://www.flickr.com/photos/35484468@N07/)"]
         
     @property
     def Music(self):

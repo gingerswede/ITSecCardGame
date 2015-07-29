@@ -4,8 +4,7 @@ Created on 22 jul 2015
 @author: Emil
 '''
 import Tkinter as tk
-from PIL import Image, ImageTk
-from Tkconstants import LEFT, X, CENTER, RIDGE, N, RIGHT, W, E
+from Tkconstants import LEFT, X, CENTER, RIDGE
 from tkFont import BOLD
 import tkFont
 from View import GlobalFunc
@@ -119,7 +118,7 @@ class Menu(object):
         labelBack.bind("<Button-1>", self.__controller.OpenMenu)
         labelBack.pack(fill=X)
         
-    def ShowCredits(self, credits):
+    def ShowCredits(self, cred):
         GlobalFunc.RemoveAllChildren(self.__root)
         
         menuFrame = tk.Frame(self.__root)
@@ -136,7 +135,7 @@ class Menu(object):
         
         self.GenerateSecondLevelHeading(sourceFrame, self.CREDITS_SOURCE)
         
-        for s in credits.Source:
+        for s in cred.Source:
             self.GenerateLabel(sourceFrame, s)
         
         musicFrame = tk.Frame(menuFrame)
@@ -145,7 +144,7 @@ class Menu(object):
         
         self.GenerateSecondLevelHeading(musicFrame, self.CREDITS_MUSIC)
         
-        for s in credits.Music:
+        for s in cred.Music:
             self.GenerateLabel(musicFrame, s)
             
         soundEffectFrame = tk.Frame(menuFrame)
@@ -154,7 +153,7 @@ class Menu(object):
         
         self.GenerateSecondLevelHeading(soundEffectFrame, self.CREDITS_SOUND)
         
-        for s in credits.SoundEffects:
+        for s in cred.SoundEffects:
             self.GenerateLabel(soundEffectFrame, s)
             
             
@@ -164,7 +163,7 @@ class Menu(object):
         
         self.GenerateSecondLevelHeading(imageFrame, self.CREDITS_IMAGES)
         
-        for s in credits.Images:
+        for s in cred.Images:
             self.GenerateLabel(imageFrame, s)
         
         labelBack = tk.Label(menuFrame, text=self.BACK, background=Controller.Master.MasterController.RED)

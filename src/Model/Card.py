@@ -4,8 +4,16 @@ Created on 19 jul 2015
 @author: Emil
 '''
 
-import re
+import sqlite3, os
+from Model import DAL
+
 class Card(object):
+    
+    IMAGES_TABLE = "images"
+    IMAGES_ID = "id"
+    IMAGES_NAME = "name"
+    IMAGES_TYPE = "type"
+    IMAGES_BLOB = "image_data"
     
     __isAlive = None
     __hp = None
@@ -33,7 +41,7 @@ class Card(object):
     
     @Name.setter
     def Name(self, cardName):
-        if type(cardName) == str and len(cardName) > 3:
+        if len(cardName) > 3:
             self.__name = cardName
             
         else:
@@ -44,17 +52,14 @@ class Card(object):
         if type(self.__image) == None:
             raise TypeError
         
-        return self.__image
+        dal = DAL.DAL()
+        image = dal.GetPictureById(self.__image)
+        
+        return image
     
     @Image.setter
     def Image(self, cardImage):
-        #pattern = re.compile("^(https?:\/\/)([\da-z\.-]+)\.[a-z]*")
-        #if type(cardImage) == str and pattern.match(cardImage):
-        self.__image = cardImage
-            
-        #else:
-        #    raise TypeError
-        
+        self.__image = cardImage        
 
     @property
     def AP(self):
@@ -106,7 +111,7 @@ class Card(object):
     
     @Description.setter
     def Description(self, cardDescription):
-        if type(cardDescription) == str and len(cardDescription) > 10:
+        if len(cardDescription) > 10:
             self.__description = cardDescription
             
         else:
@@ -130,3 +135,4 @@ class Card(object):
                 return self
         else:            
             raise TypeError
+    

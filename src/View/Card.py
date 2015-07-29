@@ -6,9 +6,8 @@ Created on 22 jul 2015
 import Model
 
 import Tkinter as tk
-from Tkconstants import BOTH, RIDGE, LEFT, FLAT, RIGHT, N, NE, SUNKEN, S, GROOVE, E, W, NW, SW
+from Tkconstants import LEFT
 
-import urllib, io
 from PIL import Image, ImageTk
 from tkFont import BOLD
 
@@ -18,7 +17,7 @@ class Card(object):
     __healthPoints = None
     __attackPoints = None
     __defensePoints = None
-    __imageLink = None
+    __image = None
     __description = None
     __name = None
     
@@ -34,7 +33,7 @@ class Card(object):
             self.__defensePoints = card.DP
             self.__healthPoints = card.HP
             self.__description = card.Description
-            self.__imageLink = card.Image
+            self.__image = card.Image
             self.__name = card.Name
             
         else:
@@ -45,12 +44,12 @@ class Card(object):
         base.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
         base.pack(side=LEFT, padx=5)
         
-        title = tk.Label(base, text=self.__name, background="green")
+        title = tk.Label(base, text=self.__name)
         title.config(font=("Arial", 12, BOLD))
         title.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
         title.pack()
                 
-        img = ImageTk.PhotoImage(Image.open(self.__imageLink))
+        img = ImageTk.PhotoImage(self.__image)
         self.__img = img
         imgLabel = tk.Label(base, image=img)
         imgLabel.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
@@ -63,7 +62,7 @@ class Card(object):
         cardInformationFrame.pack()
         
         
-        description = tk.Label(base, text=self.__description, wraplength=width-10, width=width)
+        description = tk.Label(base, text=self.__description, wraplength=width-15, width=width)
         description.config(font=("Arial", 8))
         description.bind("<Button-1>", lambda e, card=self.__card:self.__controller.PlayCard(card))
         description.pack()

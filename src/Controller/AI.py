@@ -3,7 +3,6 @@ Created on 28 jul 2015
 
 @author: Emil
 '''
-from Model.Exceptions import OutOfMovesError
 import random
 
 class AI(object):
@@ -46,10 +45,14 @@ class AI(object):
                 else:
                     break
             except Exception as e:
-                print e
                 break
         try:
-            self.__player.DrawCard()
+            r = random.randint(0,1000)
+            if r % 2 == 0:
+                self.__player.DrawCard()
+            else:
+                card = self.__player.hand[r % len(self.__player.hand)]
+                self.__player.PutCard(card)
         except:
             pass
         self.__player.EndTurn()

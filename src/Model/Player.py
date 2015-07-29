@@ -3,7 +3,6 @@ Created on 21 jul 2015
 
 @author: Emil
 '''
-from Model.Deck import Deck
 
 from Model.Exceptions import OutOfMovesError, IncorrectAttackerError, MaxHandSize, CardNotInHand, MaxVisibleHandSize
 

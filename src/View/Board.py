@@ -6,14 +6,12 @@ Created on 22 jul 2015
 import Tkinter as tk
 import tkFont
 
-from Tkconstants import BOTH, RIDGE, LEFT, FLAT, RIGHT, N, NE, SUNKEN, S, GROOVE, E, W, NW, SW,\
-    NONE
+from Tkconstants import BOTH, RIDGE, LEFT, RIGHT, SUNKEN, S, NONE
 
 import Controller
 from View import GlobalFunc
 from View.Card import Card
 from tkFont import BOLD
-import Model
 
 class Board(object):
     PLAYER_INFO_HEADING = "Player information"
@@ -44,8 +42,8 @@ class Board(object):
         self.__root = root
         self.__controller = controller
         
-        self.__cardHeight = 260
-        self.__cardWidth = 180
+        self.__cardHeight = 275
+        self.__cardWidth = 190
         self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
         
         self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
@@ -68,7 +66,7 @@ class Board(object):
         self.__handArea.grid(row=1)
         
         #All cards on the hand not visible
-        self.__handCardArea = tk.Frame(self.__handArea, height=self.__cardHeight, bg="red")
+        self.__handCardArea = tk.Frame(self.__handArea, height=self.__cardHeight, bg=Controller.Master.MasterController.BACKGROUND_COLOR)
         self.__handCardArea.pack(side=LEFT)
         
         #The purple square
@@ -112,7 +110,6 @@ class Board(object):
             cardSpot.pack(side=LEFT, pady=10, padx=10, fill=NONE)
             cardSpot.pack_propagate(0)
             card = Card(c, self.__controller)
-            #cardDrawn = 
             card.Draw(cardSpot, self.__cardHeight, self.__cardWidth)
             
             cardSpot.bind("<Enter>", lambda e, area=cardSpot:self.MouseEnterArea(area))
@@ -122,7 +119,7 @@ class Board(object):
         if counter < maxFrames:
             for i in range(counter,maxFrames):
                 cardSpot = tk.Frame(frame, height=self.__cardHeight, width=self.__cardWidth)
-                cardSpot.config(borderwidth=5, relief=RIDGE, background=Controller.Master.MasterController.BACKGROUND_COLOR)
+                cardSpot.config(borderwidth=5, relief=RIDGE, background=Controller.Master.MasterController.BACKGROUND_COLOR_CARD)
                 cardSpot.pack(side=LEFT, pady=10, padx=10)
                 cardSpot.bind("<Enter>", lambda e, area=cardSpot:self.MouseEnterArea(area))
                 cardSpot.bind("<Leave>", lambda e, area=cardSpot:self.MouseLeaveArea(area))

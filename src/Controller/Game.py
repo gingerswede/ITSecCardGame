@@ -13,6 +13,7 @@ from Model.Card import Card
 from Model.Sounds import Sounds as Sound
 from pygame import mixer
 import Controller.AI as AI
+from Model.CardFactory import CardFactory
 
 class GameController(object):
     
@@ -20,6 +21,8 @@ class GameController(object):
     __playerOne = None
     __playerTwo = None
     __ai = None
+    
+    __cardFactory = None
     
     __attacker = None
     __defender = None
@@ -39,22 +42,14 @@ class GameController(object):
         self.__gameView = GameView.GameView(root, self)
         self.__imgPath = os.path.join(os.path.abspath(os.getcwd()), "..", "img")
         self.__sounds = Sound()
+        self.__cardFactory = CardFactory()
         
     def StartNewGame(self, event):
-        #TODO! Fix before release
-        cardsHandOne = [None] * 9
-        cardsHandTwo = [None] * 9
         
-        for i in range(0, 9):
-            cardHandOne = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(6,9), random.randint(6,9), random.randint(5,7))
-            cardHandTwo = Card("Card no %d" % i, "A firewall will give you defense against intruders by filtering by who and when a connection is allowed.", os.path.join(self.__imgPath, "firewall.jpg"), random.randint(6,9), random.randint(6,9), random.randint(5,7))
-            
-            cardsHandOne[i] = cardHandOne
-            cardsHandTwo[i] = cardHandTwo
-            
-        p1d = Deck(deck=cardsHandOne)
+        
+        p1d = self.__cardFactory.GetDeck(10)
         p1d.Shuffle()
-        p2d = Deck(deck=cardsHandTwo)
+        p2d = self.__cardFactory.GetDeck(10)
         p2d.Shuffle()
         
         self.PlaySound(self.__sounds.Shuffle)
@@ -69,9 +64,9 @@ class GameController(object):
         
     def SetAttackerDefender(self, card):
         self.PlaySound(self.__sounds.Click)
-        if card in self.__playerOne.hand:
+        if card in self.__playerOne.VisibleCards:
             self.__attacker = card
-        elif card in self.__playerTwo.hand:
+        elif card in self.__playerTwo.VisibleCards:
             self.__defender = card
             
         if self.__attacker is not None and self.__defender is not None:
@@ -109,7 +104,7 @@ class GameController(object):
                 self.PlaySound(self.__sounds.CardPlace)
                 self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
                 self.__gameView.ResetInformation()
-            elif card in self.__playerOne.VisibleCards:
+            elif card in self.__playerOne.VisibleCards or card in self.__playerTwo.VisibleCards:
                 self.SetAttackerDefender(card)
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
@@ -120,12 +115,9 @@ class GameController(object):
     
     def PerformBattle(self):
         try:
-            winner = self.__playerOne.Attack(self.__defender, self.__attacker)
+            self.__playerOne.Attack(self.__defender, self.__attacker)
             
-            if winner == self.__attacker:
-                self.__gameView.UpdateOpponentVisibleHand(self.__playerTwo.hand)
-            else:
-                self.__gameView.UpdateOwnVisibleHand(self.__playerOne.hand)
+            self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
                 
             self.__attacker = None
             self.__defender = None

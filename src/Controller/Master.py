@@ -6,7 +6,7 @@ Created on 22 jul 2015
 import Tkinter as tk, pygame
 from Tkconstants import NW, BOTH
 
-from View import Menu, GlobalFunc
+from View import GlobalFunc
 from Controller import Menu as MenuController, Game as GameController
 from Model import Player, Settings
 from Model.Sounds import Sounds as Sound
@@ -15,6 +15,7 @@ from Model.Sounds import Sounds as Sound
 class MasterController(object):
     VIEW_AREA = "viewarea"
     BACKGROUND_COLOR = "chartreuse4"
+    BACKGROUND_COLOR_CARD = "green4"
     DECK_COLOR = "purple4"
     RED = "red4"
     
@@ -47,7 +48,7 @@ class MasterController(object):
         self.__viewArea = tk.Frame(background, background=self.BACKGROUND_COLOR)
         self.__viewArea.pack(pady=10, padx=10, fill=BOTH, expand=True)
         
-        self.__menuController = MenuController.MenuController(self.__viewArea, self.__player, self)
+        self.__menuController = MenuController.MenuController(self.__viewArea, self)
         self.__gameController = GameController.GameController(self.__viewArea, self.__player, self)
         
         self.__menuController.DisplayBasicMenu(self.__menuArea)
