@@ -32,18 +32,14 @@ class MenuController(object):
         self.__menuView.AddMenuText(root)
         
     def OpenMenu(self, *args, **kwargs):
-        self.__masterController.OpenMenu(args)
+        self.__masterController.OpenMenu()
         
-    def OpenMainMenu(self, event, root):
+    def OpenMainMenu(self, root):
         GlobalFunc.RemoveAllChildren(root)
-        self.__menuView.DisplayMenu(None)
-
-    def SaveUsername(self, event):
-        userName = event.widget.master.nametowidget(self.__menuView.USER_NAME_WRAPPER).nametowidget(MenuView.Menu.USER_NAME_FRAME).get()
-        self.__player.Name = userName
+        self.__menuView.DisplayMenu()
     
-    def StartNewGame(self, event=None):
-        self.__masterController.StartNewGame(event)
+    def StartNewGame(self):
+        self.__masterController.StartNewGame()
         
     def Credits(self, *args, **kwargs):
         self.__masterController.ShowCredits()
@@ -54,6 +50,9 @@ class MenuController(object):
     
     def ShowSettings(self):
         self.__menuView.ShowSettings(self.__masterController.Settings)
+        
+    def ShowInstructions(self):
+        self.__menuView.ShowInstructions()
         
     def MusicOn(self, frame):
         self.__masterController.Settings.Music = True

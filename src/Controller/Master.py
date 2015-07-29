@@ -55,14 +55,14 @@ class MasterController(object):
         
         self.__menuController.DisplayBasicMenu(self.__menuArea)
         
-        root.bind('<Escape>', lambda e, root=self.__viewArea: self.OpenMenu(e, root))
-        root.bind('<x>', self.CloseApplication)
+        root.bind('<Escape>', lambda e, root=self.__viewArea: self.OpenMenu(root))
+        root.bind('<x>', lambda e:self.CloseApplication())
         
         self.__sounds = Sound()
         self.__mixer = pygame.mixer
         self.__mixer.init()
         
-        self.OpenMenu(None)
+        self.OpenMenu()
         
     def ShowCredits(self, *args, **kwargs):
         self.__mixer.stop()
@@ -82,25 +82,25 @@ class MasterController(object):
             
         self.__menuController.ShowSettings()
         
-    def OpenMenu(self, e):
+    def OpenMenu(self):
         self.__mixer.stop()
         
         if self.__settings.Music:
             sound = self.__mixer.Sound(self.__sounds.MenuMusic)
             sound.play(loops=-1)
         
-        self.__menuController.OpenMainMenu(e, self.__viewArea)
+        self.__menuController.OpenMainMenu(self.__viewArea)
         
-    def StartNewGame(self, event):
+    def StartNewGame(self):
         self.__mixer.stop()
         if self.__settings.Music:
             sound = self.__mixer.Sound(self.__sounds.GamePlayMusic)
             sound.play(loops=-1)
         
-        self.__gameController.StartNewGame(event)
+        self.__gameController.StartNewGame()
         
-    def CloseApplication(self, event=None):
-        GlobalFunc.CloseWindow(event, self.__root)
+    def CloseApplication(self):
+        GlobalFunc.CloseWindow(self.__root)
         
     @property
     def Settings(self):

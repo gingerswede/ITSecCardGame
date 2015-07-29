@@ -8,11 +8,11 @@ Operating system: Windows 8.1
 
 from types import NoneType
 
-def CloseWindow(event, root):
+def CloseWindow(root):
     if (type(root.master) == NoneType):
         root.destroy()    
     else:
-        CloseWindow(event, root.master)
+        CloseWindow(root.master)
 
 def RemoveAllChildren(frame):
     for child in frame.winfo_children():

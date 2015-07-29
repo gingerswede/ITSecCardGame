@@ -16,10 +16,12 @@ class Menu(object):
     START_GAME = "Start new game"
     SETTINGS = "Settings"
     MENU_HEADING = "Menu"
+    INSTRUCTIONS = "Instructions"
     INFO_MENU = "Menu (Esc)"
     INFO_EXIT = "Exit (x)"
     EXIT = "Exit"
     BACK = "Back"
+    
     CREDITS_HEADING = "Credits"
     CREDITS_MUSIC = "Music"
     CREDITS_SOURCE = "Development"
@@ -41,7 +43,7 @@ class Menu(object):
         self.__root = root
         self.__controller = controller
     
-    def DisplayMenu(self, event=None):
+    def DisplayMenu(self):
         GlobalFunc.RemoveAllChildren(self.__root)
             
         menuFrame = tk.Frame(self.__root)
@@ -58,12 +60,17 @@ class Menu(object):
             
         labelNewGame = tk.Label(menuFrame, text=self.START_GAME, background=Controller.Master.MasterController.RED)
         labelNewGame.config(font=("Arial Black", 20, BOLD))
-        labelNewGame.bind("<Button-1>", lambda e:self.__controller.StartNewGame(e))
+        labelNewGame.bind("<Button-1>", lambda e:self.__controller.StartNewGame())
         labelNewGame.pack(fill=X, padx=10)
             
         labelSettings = tk.Label(menuFrame, text=self.SETTINGS, background=Controller.Master.MasterController.RED)
         labelSettings.config(font=("Arial Black", 20, BOLD))
         labelSettings.bind("<Button-1>", lambda e:self.__controller.ShowSettings())
+        labelSettings.pack(fill=X, padx=10)
+            
+        labelSettings = tk.Label(menuFrame, text=self.INSTRUCTIONS, background=Controller.Master.MasterController.RED)
+        labelSettings.config(font=("Arial Black", 20, BOLD))
+        labelSettings.bind("<Button-1>", lambda e:self.__controller.ShowInstructions())
         labelSettings.pack(fill=X, padx=10)
         
         labelSettings = tk.Label(menuFrame, text=self.CREDITS_HEADING, background=Controller.Master.MasterController.RED)
@@ -73,7 +80,7 @@ class Menu(object):
         
         labelExit = tk.Label(menuFrame, text=self.EXIT, background=Controller.Master.MasterController.RED)
         labelExit.config(font=("Arial Black", 20, BOLD))
-        labelExit.bind("<Button-1>", lambda e, root = self.__root:GlobalFunc.CloseWindow(e, root))
+        labelExit.bind("<Button-1>", lambda e, root = self.__root:GlobalFunc.CloseWindow(root))
         labelExit.pack(fill=X, padx=10)
     
     def AddMenuText(self, menuArea):
@@ -83,7 +90,7 @@ class Menu(object):
         label.pack(side=LEFT, padx=5)
         
         labelClose = tk.Label(menuArea, text=self.INFO_EXIT, justify=LEFT)
-        labelClose.bind("<Button-1>", lambda e, root=self.__root: GlobalFunc.CloseWindow(e, root))
+        labelClose.bind("<Button-1>", lambda e, root=self.__root: GlobalFunc.CloseWindow(root))
         labelClose.pack()
         
     #TODO! Change settings to valid settings
@@ -115,10 +122,7 @@ class Menu(object):
             music = self.GenerateLabel(soundFrame, "Music: OFF")
             music.bind("<Button-1>", lambda e:self.__controller.MusicOn(music))
         
-        labelBack = tk.Label(settings, text=self.BACK, background=Controller.Master.MasterController.RED)
-        labelBack.config(font=("Arial Black", 16, BOLD))
-        labelBack.bind("<Button-1>", self.__controller.OpenMenu)
-        labelBack.pack(fill=X)
+        self.AddBackButton(settings)
         
     def ShowCredits(self, cred):
         GlobalFunc.RemoveAllChildren(self.__root)
@@ -167,11 +171,51 @@ class Menu(object):
         
         for s in cred.Images:
             self.GenerateLabel(imageFrame, s)
-        
-        labelBack = tk.Label(menuFrame, text=self.BACK, background=Controller.Master.MasterController.RED)
+            
+        self.AddBackButton(menuFrame)
+    
+    def AddBackButton(self, frame):
+        labelBack = tk.Label(frame, text=self.BACK, background=Controller.Master.MasterController.RED)
         labelBack.config(font=("Arial Black", 16, BOLD))
         labelBack.bind("<Button-1>", self.__controller.OpenMenu)
         labelBack.pack(fill=X)
+        
+    def ShowInstructions(self):
+        GlobalFunc.RemoveAllChildren(self.__root)
+        
+        instructionFrame = tk.Frame(self.__root)
+        instructionFrame.config(borderwidth=5, relief=RIDGE, background=Controller.Master.MasterController.RED)
+        instructionFrame.pack(anchor=CENTER)
+            
+        headingInstructions = tk.Label(instructionFrame, text="Instructions", background=Controller.Master.MasterController.RED)
+        headingInstructions.config(font=("Arial Black", 25, BOLD))
+            
+        headingFont = tkFont.Font(headingInstructions, headingInstructions.cget("font"))
+        headingFont.configure(underline=True)
+        headingInstructions.config(font=headingFont)
+        headingInstructions.pack(fill=X, padx=10, pady=5)
+        
+        self.GenerateSecondLevelHeading(instructionFrame, "How to:")
+        
+        drawCard = self.GenerateLabel(instructionFrame, "To draw a new card, click on your deck. Your deck have the color purple.")
+        drawCard.config(wraplength=800, justify=LEFT, pady=5, padx=5)
+        
+        attackCard = self.GenerateLabel(instructionFrame, "To attack your opponent, first click on the card you want to attack with, then click on the card you wish to attack. Your cards are the middle row, and your opponent have the cards placed at the top row.")
+        attackCard.config(wraplength=800, justify=LEFT, pady=5, padx=5)
+        
+        placeCard = self.GenerateLabel(instructionFrame, "To place a card in the pool of visible cards, click on the card on your hand. Your hand is the row at the bottom to the left of your deck.")
+        placeCard.config(wraplength=800, justify=LEFT, pady=0, padx=0)
+        
+        self.GenerateSecondLevelHeading(instructionFrame, "Action costs:")
+        self.GenerateLabel(instructionFrame, "Draw new card: 2 action points.")
+        self.GenerateLabel(instructionFrame, "Place card: 2 action points.")
+        self.GenerateLabel(instructionFrame, "Attack opponent card: 1 action point.")
+        
+        self.GenerateSecondLevelHeading(instructionFrame, "Rules:")
+        ruleLabel = self.GenerateLabel(instructionFrame, "Force your opponent to not being able to play any more cards. This is done by attacking the opponents cards. Remember, only attack a card with lower DP than your card have AP.")
+        ruleLabel.config(wraplength=800, justify=LEFT, pady=5, padx=5)
+        
+        self.AddBackButton(instructionFrame)
         
     def GenerateSecondLevelHeading(self, root, text, font=("Arial Black", 20, BOLD)):
         sourceHeading = tk.Label(root, text=text, background=Controller.Master.MasterController.RED)

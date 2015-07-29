@@ -46,7 +46,7 @@ class GameController(object):
         self.__sounds = Sound()
         self.__cardFactory = CardFactory()
         
-    def StartNewGame(self, event):
+    def StartNewGame(self):
         
         
         p1d = self.__cardFactory.GetDeck(10)
@@ -58,10 +58,10 @@ class GameController(object):
         
         self.__playerOne = Model.Player.Player(deck=p1d)
         self.__playerTwo = Model.Player.Player(deck=p2d)
-        self.__gameView.StartNewGame(event, self.__playerOne, self.__playerTwo)
+        self.__gameView.StartNewGame(self.__playerOne, self.__playerTwo)
         self.__ai = AI.AI(self.__playerTwo)
         
-    def DisplayCardInfo(self, event, card):
+    def DisplayCardInfo(self, card):
         self.__gameView.DisplayCardInfo(card)
         
     def SetAttackerDefender(self, card):

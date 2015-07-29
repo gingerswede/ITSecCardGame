@@ -19,7 +19,7 @@ class GameView(object):
         self.__root = root
         self.__controller = gameController
         
-    def StartNewGame(self, event=None, player=None, opponent=None):
+    def StartNewGame(self, player=None, opponent=None):
         GlobalFunc.RemoveAllChildren(self.__root)
         self.__boardView = Board(self.__root, self.__controller, player, opponent)
         
