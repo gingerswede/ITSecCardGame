@@ -6,12 +6,10 @@ Operating system: Windows 8.1
 @author: Emil Carlsson
 '''
 
-import Model, random, os
+import Model, os
 
 from View import Game as GameView
 from Model.Exceptions import OutOfMovesError, MaxHandSize, CardNotInHand, MaxVisibleHandSize
-from Model.Deck import Deck
-from Model.Card import Card
 from Model.Sounds import Sounds as Sound
 from pygame import mixer
 import Controller.AI as AI
