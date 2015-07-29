@@ -94,8 +94,6 @@ class GameController(object):
         self.__playerTwo.ClearBoard()
         self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         self.__gameView.ResetInformation()
-        for c in self.__playerTwo.hand:
-            print c.Name
         
     def PlayCard(self, card):
         try:
