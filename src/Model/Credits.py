@@ -13,6 +13,7 @@ class Credits(object):
     __soundEffects = None
     __source = None
     __images = None
+    __license = None
 
     def __init__(self, *args, **kwargs):
         self.__music = ["Matti Paalanen (https://www.jamendo.com/en/list/a145266/inspirational)"]
@@ -28,7 +29,7 @@ class Credits(object):
                          "Pixabay (https://pixabay.com/)",
                          "Ryan Somma (https://www.flickr.com/photos/ideonexus/)",
                          "Edwind Richzendy Contreras Soto (https://www.flickr.com/photos/35484468@N07/)"]
-        
+        self.__license = "This program is distributed under the terms of the GNU General Public License\nCopyright 2015 Emil Carlsson"
     @property
     def Music(self):
         return self.__music
@@ -44,4 +45,8 @@ class Credits(object):
     @property
     def Images(self):
         return self.__images
+    
+    @property
+    def License(self):
+        return self.__license
         

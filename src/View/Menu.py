@@ -13,6 +13,7 @@ from tkFont import BOLD
 import tkFont
 from View import GlobalFunc
 import Controller
+from Model import Player
 
 class Menu(object):
     START_GAME = "Start new game"
@@ -29,6 +30,7 @@ class Menu(object):
     CREDITS_SOURCE = "Development"
     CREDITS_SOUND = "Sound effects"
     CREDITS_IMAGES = "Images"
+    CREDITS_LICENSE = "License"
     
     USER_NAME_FRAME = "usrNm"
     USER_NAME_WRAPPER = "usrNmWrp"
@@ -174,6 +176,14 @@ class Menu(object):
         for s in cred.Images:
             self.GenerateLabel(imageFrame, s)
             
+            
+        lisenceFrame = tk.Frame(menuFrame)
+        lisenceFrame.config(background=Controller.Master.MasterController.RED)
+        lisenceFrame.pack(fill=X)
+        
+        self.GenerateSecondLevelHeading(lisenceFrame, self.CREDITS_LICENSE, ("Arial Black", 12, BOLD))
+        self.GenerateLabel(lisenceFrame, cred.License, ("Arial", 10, BOLD))
+            
         self.AddBackButton(menuFrame)
     
     def AddBackButton(self, frame):
@@ -182,6 +192,7 @@ class Menu(object):
         labelBack.bind("<Button-1>", self.__controller.OpenMenu)
         labelBack.pack(fill=X)
         
+    #TODO: Sloppy function, remove string dependencies
     def ShowInstructions(self):
         GlobalFunc.RemoveAllChildren(self.__root)
         
@@ -205,13 +216,14 @@ class Menu(object):
         attackCard = self.GenerateLabel(instructionFrame, "To attack your opponent, first click on the card you want to attack with, then click on the card you wish to attack. Your cards are the middle row, and your opponent have the cards placed at the top row.")
         attackCard.config(wraplength=800, justify=LEFT, pady=5, padx=5)
         
+        #TODO: Fix the padding so it does not double.
         placeCard = self.GenerateLabel(instructionFrame, "To place a card in the pool of visible cards, click on the card on your hand. Your hand is the row at the bottom to the left of your deck.")
-        placeCard.config(wraplength=800, justify=LEFT, pady=0, padx=0)
+        placeCard.config(wraplength=800, justify=LEFT)
         
         self.GenerateSecondLevelHeading(instructionFrame, "Action costs:")
-        self.GenerateLabel(instructionFrame, "Draw new card: 2 action points.")
-        self.GenerateLabel(instructionFrame, "Place card: 2 action points.")
-        self.GenerateLabel(instructionFrame, "Attack opponent card: 1 action point.")
+        self.GenerateLabel(instructionFrame, "Draw new card: %d action points." % Player.Player.CARD_COST)
+        self.GenerateLabel(instructionFrame, "Place card: %d action points." % Player.Player.CARD_COST)
+        self.GenerateLabel(instructionFrame, "Attack opponent card: %d action point." % Player.Player.ATTACK_COST)
         
         self.GenerateSecondLevelHeading(instructionFrame, "Rules:")
         ruleLabel = self.GenerateLabel(instructionFrame, "Force your opponent to not being able to play any more cards. This is done by attacking the opponents cards. Remember, only attack a card with lower DP than your card have AP.")
