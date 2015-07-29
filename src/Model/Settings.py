@@ -1,7 +1,9 @@
 '''
-Created on 28 jul 2015
+IDE: Eclipse (PyDev)
+Python version: 2.7
+Operating system: Windows 8.1
 
-@author: Emil
+@author: Emil Carlsson
 '''
 
 class Settings(object):
@@ -9,7 +11,7 @@ class Settings(object):
     __music = None
 
     def __init__(self, *args, **kwargs):
-        self.__music = False
+        self.__music = True
         
     @property
     def Music(self):

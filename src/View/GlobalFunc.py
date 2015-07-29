@@ -1,7 +1,9 @@
 '''
-Created on 23 jul 2015
+IDE: Eclipse (PyDev)
+Python version: 2.7
+Operating system: Windows 8.1
 
-@author: Emil
+@author: Emil Carlsson
 '''
 
 from types import NoneType

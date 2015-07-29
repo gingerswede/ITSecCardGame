@@ -1,4 +1,9 @@
 '''
+IDE: Eclipse (PyDev)
+Python version: 2.7
+Operating system: Windows 8.1
+
+@author: Emil Carlsson
 copy of accepted answer on http://stackoverflow.com/questions/1732438/how-to-run-all-python-unit-tests-in-a-directory
 '''
 import unittest

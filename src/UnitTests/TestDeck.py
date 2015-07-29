@@ -1,7 +1,9 @@
 '''
-Created on 20 jul 2015
+IDE: Eclipse (PyDev)
+Python version: 2.7
+Operating system: Windows 8.1
 
-@author: Emil
+@author: Emil Carlsson
 '''
 import unittest
 import Model.Card as Card

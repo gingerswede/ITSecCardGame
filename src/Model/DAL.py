@@ -1,9 +1,10 @@
 '''
-Created on 29 jul 2015
+IDE: Eclipse (PyDev)
+Python version: 2.7
+Operating system: Windows 8.1
 
-@author: Emil
+@author: Emil Carlsson
 '''
-
 import os
 import sqlite3
 from types import NoneType
