@@ -80,7 +80,10 @@ class GameController(object):
             self.PlaySound(self.__sounds.CardFlip)
             self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         except OutOfMovesError:
-            self.__gameView.OutOfMoves()
+            if self.__playerOne.CardsLeft == 0:
+                self.__gameView.OutOfCards()
+            else:
+                self.__gameView.OutOfMoves()
         except MaxHandSize:
             self.__gameView.MaxHandSize()
             
@@ -97,6 +100,11 @@ class GameController(object):
         self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         self.__gameView.ResetInformation()
         
+        if self.__playerOne.CardsLeft == 0 and len(self.__playerOne.hand) == 0 and len(self.__playerOne.VisibleCards) == 0:
+            self.__gameView.PlayerLost()
+        elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
+            self.__gameView.PlayerWon()
+            
     def PlayCard(self, card):
         try:
             if card in self.__playerOne.hand:

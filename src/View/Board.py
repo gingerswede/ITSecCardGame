@@ -31,6 +31,7 @@ class Board(object):
     
     __handArea = None
     __handCardArea = None
+    __opponentInformationArea = None
     __messageArea = None
     __handDeckArea = None
     __playerInformationArea = None
@@ -44,6 +45,7 @@ class Board(object):
     def __init__(self, root, controller, player, opponent):
         GlobalFunc.RemoveAllChildren(root)
         self.__root = root
+        self.__root.grid_propagate(0)
         self.__controller = controller
         
         self.__cardHeight = 275
@@ -51,7 +53,7 @@ class Board(object):
         self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
         
         self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
-        self.__visibleCardsArea.grid(row=0)
+        self.__visibleCardsArea.grid(row=0, padx=self.__cardWidth)
         
         #Visible cards player one
         self.__cardAreaPlayerOne = tk.Frame(self.__visibleCardsArea, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=((self.__root.winfo_width()-5)/4)*3, height=(self.__root.winfo_height()/3))
@@ -59,15 +61,19 @@ class Board(object):
         self.__cardAreaPlayerTwo = tk.Frame(self.__visibleCardsArea, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=((self.__root.winfo_width()-5)/4)*3, height=(self.__root.winfo_height()/3))
         
         #Messages
-        self.__messageArea = tk.Frame(self.__visibleCardsArea, width=self.__root.winfo_width()/4, background=Controller.Master.MasterController.BACKGROUND_COLOR)
+        self.__opponentInformationArea = tk.Frame(self.__visibleCardsArea, width=self.__root.winfo_width()/4, height=(self.__root.winfo_height()/3), background=Controller.Master.MasterController.BACKGROUND_COLOR)
+        self.__messageArea = tk.Frame(self.__visibleCardsArea, width=self.__root.winfo_width()/4, height=(self.__root.winfo_height()/3), background=Controller.Master.MasterController.BACKGROUND_COLOR)
         
         self.__cardAreaPlayerTwo.grid(row=0, column=0)
         self.__cardAreaPlayerOne.grid(row=1, column=0)
-        self.__messageArea.grid(row=0, column=1, rowspan=2)
+        self.__opponentInformationArea.grid(row=0, column=1)
+        self.__opponentInformationArea.grid_propagate(0)
+        self.__messageArea.grid(row=1, column=1)
+        self.__messageArea.grid_propagate(0)
              
         #Area with player information, deck, and cards on hand
         self.__handArea = tk.Frame(self.__root, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3))
-        self.__handArea.grid(row=1)
+        self.__handArea.grid(row=1, column=0, columnspan=2, padx=0)
         
         #All cards on the hand not visible
         self.__handCardArea = tk.Frame(self.__handArea, height=self.__cardHeight, bg=Controller.Master.MasterController.BACKGROUND_COLOR)
@@ -94,6 +100,7 @@ class Board(object):
         self.DrawCards(self.__cardAreaPlayerTwo, opponent.VisibleCards, opponent.MAX_VISIBLE_CARDS)
         
         self.PutPlayerInformation(player)
+        self.PutOpponentInformation(opponent)
         
     def PutPlayerInformation(self, player):
         GlobalFunc.RemoveAllChildren(self.__playerInformationArea)
@@ -104,6 +111,9 @@ class Board(object):
         endTurnButton.bind("<Button-1>", lambda e:self.__controller.EndTurn())
         endTurnButton.pack(anchor=S, pady=25)
         
+    def PutOpponentInformation(self, opponent):
+        GlobalFunc.RemoveAllChildren(self.__opponentInformationArea)
+        self.GenerateTextPair(self.PLAYER_INFO_CARDS_LEFT, opponent.CardsLeft, self.__opponentInformationArea)
     
     def DrawCards(self, frame, cards, maxFrames):
         GlobalFunc.RemoveAllChildren(frame)
@@ -134,11 +144,13 @@ class Board(object):
         self.DrawCards(self.__cardAreaPlayerTwo, playerTwo.VisibleCards, playerTwo.MAX_VISIBLE_CARDS)
         
         self.PutPlayerInformation(playerOne)
+        self.PutOpponentInformation(playerTwo)
         
     def AddInformation(self, informationText):
         GlobalFunc.RemoveAllChildren(self.__messageArea)
+        self.__messageArea.pack_propagate(0)
         information = tk.Frame(self.__messageArea, background=Controller.Master.MasterController.RED, borderwidth=5, relief=RIDGE)
-        information.pack(fill=BOTH)
+        information.pack()
         label = tk.Label(information, text=informationText, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
         label.config(font=("Arial Black", 16, BOLD))
         label.pack()

@@ -43,5 +43,14 @@ class GameView(object):
     def RemoveFrame(self, frame):
         frame.destroy()
         
+    def PlayerLost(self):
+        self.__boardView.AddInformation("You lost!\nGame Over!")
+        
+    def PlayerWon(self):
+        self.__boardView.AddInformation("You won!\nGame Over!")
+        
+    def OutOfCards(self):
+        self.__boardView.AddInformation("You are out of cards in your deck.")
+    
     def CardNotInHand(self):
         self.__boardView.AddInformation("Card not on your hand.")
