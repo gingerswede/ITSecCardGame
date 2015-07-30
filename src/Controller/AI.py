@@ -26,15 +26,15 @@ class AI(object):
         while self.__player.ActionPoints > 0:
             try:
                 doAttack = random.randint(1,1000)
-                if self.CanAttack(opponent) and doAttack % 6 < 5:
+                if self.CanAttack(opponent) and doAttack % 6 < 5: #random factor to not make it unbeatable
                     highest = self.__player.VisibleCards[0]
-                    lowest = opponent.VisibleCards[0]
+                    lowest = opponent[0]
                     
                     for c in self.__player.VisibleCards:
                         if c.AP > highest.AP:
                             highest = c
                     
-                    for c in opponent.VisibleCards:
+                    for c in opponent:
                         if c.DP < highest.AP:
                             lowest = c
                     
@@ -62,7 +62,7 @@ class AI(object):
                 break
         try:
             r = random.randint(0,1000)
-            if r % 7 == 0:
+            if r % 7 == 0: #random factor to not make it unbeatable
                 self.__player.DrawCard()
             else:
                 card = self.__player.hand[r % len(self.__player.hand)]
@@ -81,7 +81,7 @@ class AI(object):
     def CanAttack(self, opponent):
         if self.__player.ActionPoints > self.__player.CARD_COST:
             if len(self.__player.VisibleCards) > 0:
-                if len(opponent.VisibleCards) > 0:
+                if len(opponent) > 0:
                     return True
         return False
     

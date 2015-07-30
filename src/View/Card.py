@@ -12,7 +12,7 @@ import Model
 import Tkinter as tk
 from Tkconstants import LEFT
 
-from PIL import Image, ImageTk
+from PIL import ImageTk
 from tkFont import BOLD
 
 

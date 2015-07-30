@@ -92,7 +92,7 @@ class Board(object):
         self.__handDeckArea.pack(side=LEFT, padx=25)
         self.__handDeckArea.bind("<Enter>", lambda e, area=self.__handDeckArea:self.MouseEnterArea(area))
         self.__handDeckArea.bind("<Leave>", lambda e, area=self.__handDeckArea:self.MouseLeaveArea(area))
-        self.__handDeckArea.bind("<Button-1>", lambda e:self.__controller.DrawCard())
+        self.__handDeckArea.bind("<ButtonRelease-1>", lambda e:self.__controller.DrawCard())
         
         #AP, Cards left, etc
         self.__playerInformationArea = tk.Frame(self.__handArea, width=self.__playerInfoWidth, height=self.__cardHeight)
@@ -115,7 +115,7 @@ class Board(object):
         self.GenerateTextPair(self.PLAYER_INFO_CARDS_LEFT, player.CardsLeft, self.__playerInformationArea)
         
         endTurnButton = tk.Button(self.__playerInformationArea, text="End turn")
-        endTurnButton.bind("<Button-1>", lambda e:self.__controller.EndTurn())
+        endTurnButton.bind("<ButtonRelease-1>", lambda e:self.__controller.EndTurn())
         endTurnButton.pack(anchor=S, pady=25)
         
     def PutOpponentInformation(self, opponent):

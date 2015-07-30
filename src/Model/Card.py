@@ -8,7 +8,6 @@ Operating system: Windows 8.1
 @license: This program is distributed under the terms of the GNU General Public License
 '''
 
-import sqlite3, os
 from Model import DAL
 
 class Card(object):

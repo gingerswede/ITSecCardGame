@@ -37,6 +37,7 @@ class GameController(object):
     
     __imgPath = None
     __delay = 2
+    __waiting = False
     
     __actionWinner = "winner"
     __actionAttacker = "attacker"
@@ -85,17 +86,20 @@ class GameController(object):
             self.PerformBattle()
             
     def DrawCard(self):
-        try:
-            self.__playerOne.DrawCard()
-            self.PlaySound(self.__sounds.CardFlip)
-            self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
-        except OutOfMovesError:
-            if self.__playerOne.CardsLeft == 0:
-                self.__gameView.OutOfCards()
-            else:
-                self.__gameView.OutOfMoves()
-        except MaxHandSize:
-            self.__gameView.MaxHandSize()
+        if not self.__waiting:
+            try:
+                self.__playerOne.DrawCard()
+                self.PlaySound(self.__sounds.CardFlip)
+                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+            except OutOfMovesError:
+                if self.__playerOne.CardsLeft == 0:
+                    self.__gameView.OutOfCards()
+                else:
+                    self.__gameView.OutOfMoves()
+            except MaxHandSize:
+                self.__gameView.MaxHandSize()
+        else:
+            pass
             
     def PlaySound(self, fileName):
         mixer.init()
@@ -103,57 +107,65 @@ class GameController(object):
         sound.play()
             
     def EndTurn(self):
-        self.__gameView.WaitingForOpponent()
-
-        self.__playerOne.EndTurn()
-        self.__ai.MakeMove(self.__playerOne)
-        self.__playerOne.ClearBoard()
-        self.__playerTwo.ClearBoard()
-        self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
-        self.__gameView.ResetInformation()
-        
-        for message in self.__actionMessages:
-            time.sleep(self.__delay)
-            self.__gameView.AppendMessage(message)
-            
-        self.__gameView.AppendMessage("Your turn!")
-            
-        self.__actionMessages = []
-        
-        if self.__playerOne.CardsLeft == 0 and len(self.__playerOne.hand) == 0 and len(self.__playerOne.VisibleCards) == 0:
-            self.__gameView.PlayerLost()
-        elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
-            self.__gameView.PlayerWon()
-            
-    def PlayCard(self, card):
-        try:
-            if card in self.__playerOne.hand:
-                self.__playerOne.PutCard(card)
-                self.PlaySound(self.__sounds.CardPlace)
-                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
-                self.__gameView.ResetInformation()
-            elif card in self.__playerOne.VisibleCards or card in self.__playerTwo.VisibleCards:
-                self.SetAttackerDefender(card)
-        except OutOfMovesError:
-            self.__gameView.OutOfMoves()
-        except CardNotInHand:
-            self.__gameView.CardNotInHand()
-        except MaxVisibleHandSize:
-            self.__gameView.MaxVisibleHandSize()
+        if not self.__waiting:
+            self.__waiting = True
+            self.__gameView.WaitingForOpponent()
     
-    def PerformBattle(self):
-        try:
-            self.__playerOne.Attack(self.__defender, self.__attacker)
+            self.__playerOne.EndTurn()
+            self.__ai.MakeMove(self.__playerOne.VisibleCards)
             self.__playerOne.ClearBoard()
             self.__playerTwo.ClearBoard()
             self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+            self.__gameView.ResetInformation()
+            
+            for message in self.__actionMessages:
+                time.sleep(self.__delay)
+                self.__gameView.AppendMessage(message)
                 
-            self.__attacker = None
-            self.__defender = None
+            self.__gameView.AppendMessage("Your turn!")
+                
+            self.__actionMessages = []
+            self.__waiting = False
             
-        except OutOfMovesError:
-            self.__gameView.OutOfMoves()
-            
+            if self.__playerOne.CardsLeft == 0 and len(self.__playerOne.hand) == 0 and len(self.__playerOne.VisibleCards) == 0:
+                self.__gameView.PlayerLost()
+            elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
+                self.__gameView.PlayerWon()
+        else:
+            pass   
+    def PlayCard(self, card):
+        if not self.__waiting:
+            try:
+                if card in self.__playerOne.hand:
+                    self.__playerOne.PutCard(card)
+                    self.PlaySound(self.__sounds.CardPlace)
+                    self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+                    self.__gameView.ResetInformation()
+                elif card in self.__playerOne.VisibleCards or card in self.__playerTwo.VisibleCards:
+                    self.SetAttackerDefender(card)
+            except OutOfMovesError:
+                self.__gameView.OutOfMoves()
+            except CardNotInHand:
+                self.__gameView.CardNotInHand()
+            except MaxVisibleHandSize:
+                self.__gameView.MaxVisibleHandSize()
+        else:
+            pass
+    def PerformBattle(self):
+        if not self.__waiting:
+            try:
+                self.__playerOne.Attack(self.__defender, self.__attacker)
+                self.__playerOne.ClearBoard()
+                self.__playerTwo.ClearBoard()
+                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+                    
+                self.__attacker = None
+                self.__defender = None
+                
+            except OutOfMovesError:
+                self.__gameView.OutOfMoves()
+        else:
+            pass    
     def AddAction(self, action, *args, **kwargs):
         if action == Actions.ATTACK:
             winner = None
