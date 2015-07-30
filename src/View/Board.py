@@ -22,6 +22,7 @@ class Board(object):
     PLAYER_INFO_PLAYER_NAME = "Player name:"
     PLAYER_INFO_ACTION_POINTS = "Action points:"
     PLAYER_INFO_CARDS_LEFT = "Cards left:"
+    ACTIONS = "Actions:"
     
     __root = None
     __controller = None
@@ -36,14 +37,19 @@ class Board(object):
     __handDeckArea = None
     __playerInformationArea = None
     __visibleCardsArea = None
+    __actionArea = None
     
     __cardHeight = None
     __cardWidth = None
     __playerInfoWidth = None
     
+    __messageCount = None
+    
     
     def __init__(self, root, controller, player, opponent):
         GlobalFunc.RemoveAllChildren(root)
+        self.__messageCount = 0
+        
         self.__root = root
         self.__root.grid_propagate(0)
         self.__controller = controller
@@ -145,15 +151,33 @@ class Board(object):
         
         self.PutPlayerInformation(playerOne)
         self.PutOpponentInformation(playerTwo)
+        self.__messageCount = 0
         
     def AddInformation(self, informationText):
         GlobalFunc.RemoveAllChildren(self.__messageArea)
         self.__messageArea.pack_propagate(0)
+        
         information = tk.Frame(self.__messageArea, background=Controller.Master.MasterController.RED, borderwidth=5, relief=RIDGE)
         information.pack()
         label = tk.Label(information, text=informationText, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
         label.config(font=("Arial Black", 16, BOLD))
         label.pack()
+        
+    def AppendInformation(self, message):
+        if self.__messageCount == 0:
+            GlobalFunc.RemoveAllChildren(self.__messageArea)
+            self.__messageArea.pack_propagate(0)
+            
+            self.__actionArea = tk.Frame(self.__messageArea, background=Controller.Master.MasterController.RED, borderwidth=5, relief=RIDGE)
+            self.__actionArea.pack()
+            label = tk.Label(self.__actionArea, text=self.ACTIONS, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
+            label.config(font=("Arial Black", 16, BOLD))
+            label.pack()
+            
+        messageLabel = tk.Label(self.__actionArea, text=message, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
+        messageLabel.config(font=("Arial", 12))
+        messageLabel.pack()
+        self.__messageCount += 1
         
     def GenerateTextPair(self, text, value, root):
         wrapper = tk.Frame(root, background=Controller.Master.MasterController.BACKGROUND_COLOR)

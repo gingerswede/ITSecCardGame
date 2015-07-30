@@ -16,6 +16,8 @@ from Model.Sounds import Sounds as Sound
 from pygame import mixer
 import Controller.AI as AI
 from Model.CardFactory import CardFactory
+from Model.Actions import Actions
+import time
 
 class GameController(object):
     
@@ -23,19 +25,28 @@ class GameController(object):
     __playerOne = None
     __playerTwo = None
     __ai = None
+    __actionMessages = None
     
+    __masterController = None
+    __gameView = None
     __cardFactory = None
+    __sounds = None
     
     __attacker = None
     __defender = None
     
     __imgPath = None
+    __delay = 2
     
-    __masterController = None
+    __actionWinner = "winner"
+    __actionAttacker = "attacker"
+    __actionDefender = "defender"
+    __actionCard = "card"
     
-    __gameView = None
-    
-    __sounds = None
+    ATTACK_CARD = "%s attacked %s.\n%s\n---"
+    DRAW_CARD = "Your opponent drew a new card.\n---"
+    PLACE_CARD = "Your opponent placed the card %s.\n---"
+    PASS = "Your opponent passed this turn."
     
     def __init__(self, root, player, masterController):
         self.__root = root
@@ -45,10 +56,9 @@ class GameController(object):
         self.__imgPath = os.path.join(os.path.abspath(os.getcwd()), "..", "img")
         self.__sounds = Sound()
         self.__cardFactory = CardFactory()
+        self.__actionMessages = []
         
     def StartNewGame(self):
-        
-        
         p1d = self.__cardFactory.GetDeck(10)
         p1d.Shuffle()
         p2d = self.__cardFactory.GetDeck(10)
@@ -59,7 +69,7 @@ class GameController(object):
         self.__playerOne = Model.Player.Player(deck=p1d)
         self.__playerTwo = Model.Player.Player(deck=p2d)
         self.__gameView.StartNewGame(self.__playerOne, self.__playerTwo)
-        self.__ai = AI.AI(self.__playerTwo)
+        self.__ai = AI.AI(self.__playerTwo, self)
         
     def DisplayCardInfo(self, card):
         self.__gameView.DisplayCardInfo(card)
@@ -93,17 +103,33 @@ class GameController(object):
         sound.play()
             
     def EndTurn(self):
+        self.__gameView.WaitingForOpponent()
+        start = time.time()
         self.__playerOne.EndTurn()
         self.__ai.MakeMove(self.__playerOne)
         self.__playerOne.ClearBoard()
         self.__playerTwo.ClearBoard()
         self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         self.__gameView.ResetInformation()
+        end = time.time()
+        print "AI think time: %f" % (end-start)
+        
+        
+        start = time.time()
+        for message in self.__actionMessages:
+            time.sleep(self.__delay)
+            self.__gameView.AppendMessage(message)
+            
+        self.__actionMessages = []
         
         if self.__playerOne.CardsLeft == 0 and len(self.__playerOne.hand) == 0 and len(self.__playerOne.VisibleCards) == 0:
             self.__gameView.PlayerLost()
         elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
             self.__gameView.PlayerWon()
+            
+            
+        end = time.time()
+        print "Added delay: %f" % (end-start)
             
     def PlayCard(self, card):
         try:
@@ -124,7 +150,8 @@ class GameController(object):
     def PerformBattle(self):
         try:
             self.__playerOne.Attack(self.__defender, self.__attacker)
-            
+            self.__playerOne.ClearBoard()
+            self.__playerTwo.ClearBoard()
             self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
                 
             self.__attacker = None
@@ -132,3 +159,19 @@ class GameController(object):
             
         except OutOfMovesError:
             self.__gameView.OutOfMoves()
+            
+    def AddAction(self, action, *args, **kwargs):
+        if action == Actions.ATTACK:
+            winner = None
+            if kwargs[self.__actionWinner].Name in self.__playerOne.VisibleCards:
+                winner = "Your %s won." % kwargs[self.__actionWinner].Name
+            else:
+                winner = "Opponents %s won." % kwargs[self.__actionWinner].Name
+            self.__actionMessages.append(self.ATTACK_CARD % (kwargs[self.__actionAttacker].Name, kwargs[self.__actionDefender].Name, winner))
+        elif action == Actions.DRAW_CARD:
+            self.__actionMessages.append(self.DRAW_CARD)
+        elif action == Actions.PLACE_CARD:
+            self.__actionMessages.append(self.PLACE_CARD % (kwargs[self.__actionCard].Name))
+        elif action == Actions.PASS:
+            self.__actionMessages.append(self.PASS)
+            

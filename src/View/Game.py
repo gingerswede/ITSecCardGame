@@ -54,3 +54,10 @@ class GameView(object):
     
     def CardNotInHand(self):
         self.__boardView.AddInformation("Card not on your hand.")
+    
+    #TODO: Does not show
+    def WaitingForOpponent(self):
+        self.__boardView.AddInformation("Waiting for opponent...")
+        
+    def AppendMessage(self, message):
+        self.__boardView.AppendInformation(message)
