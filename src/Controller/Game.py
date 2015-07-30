@@ -104,21 +104,19 @@ class GameController(object):
             
     def EndTurn(self):
         self.__gameView.WaitingForOpponent()
-        start = time.time()
+
         self.__playerOne.EndTurn()
         self.__ai.MakeMove(self.__playerOne)
         self.__playerOne.ClearBoard()
         self.__playerTwo.ClearBoard()
         self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
         self.__gameView.ResetInformation()
-        end = time.time()
-        print "AI think time: %f" % (end-start)
         
-        
-        start = time.time()
         for message in self.__actionMessages:
             time.sleep(self.__delay)
             self.__gameView.AppendMessage(message)
+            
+        self.__gameView.AppendMessage("Your turn!")
             
         self.__actionMessages = []
         
@@ -126,10 +124,6 @@ class GameController(object):
             self.__gameView.PlayerLost()
         elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
             self.__gameView.PlayerWon()
-            
-            
-        end = time.time()
-        print "Added delay: %f" % (end-start)
             
     def PlayCard(self, card):
         try:

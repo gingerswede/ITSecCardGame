@@ -22,6 +22,7 @@ class Board(object):
     PLAYER_INFO_PLAYER_NAME = "Player name:"
     PLAYER_INFO_ACTION_POINTS = "Action points:"
     PLAYER_INFO_CARDS_LEFT = "Cards left:"
+    PLAYER_INFO_CARDS_ON_HAND = "Cards on hand:"
     ACTIONS = "Actions:"
     
     __root = None
@@ -119,6 +120,7 @@ class Board(object):
         
     def PutOpponentInformation(self, opponent):
         GlobalFunc.RemoveAllChildren(self.__opponentInformationArea)
+        self.GenerateTextPair(self.PLAYER_INFO_CARDS_ON_HAND, len(opponent.hand), self.__opponentInformationArea)
         self.GenerateTextPair(self.PLAYER_INFO_CARDS_LEFT, opponent.CardsLeft, self.__opponentInformationArea)
     
     def DrawCards(self, frame, cards, maxFrames):
@@ -162,6 +164,7 @@ class Board(object):
         label = tk.Label(information, text=informationText, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
         label.config(font=("Arial Black", 16, BOLD))
         label.pack()
+        self.__root.update()
         
     def AppendInformation(self, message):
         if self.__messageCount == 0:
@@ -177,6 +180,7 @@ class Board(object):
         messageLabel = tk.Label(self.__actionArea, text=message, background=Controller.Master.MasterController.RED, wraplength=(self.__root.winfo_width()/4)-10)
         messageLabel.config(font=("Arial", 12))
         messageLabel.pack()
+        self.__root.update()
         self.__messageCount += 1
         
     def GenerateTextPair(self, text, value, root):

@@ -26,7 +26,7 @@ class AI(object):
         while self.__player.ActionPoints > 0:
             try:
                 doAttack = random.randint(1,1000)
-                if self.CanAttack(opponent) and doAttack % 3 == 0:
+                if self.CanAttack(opponent) and doAttack % 6 < 5:
                     highest = self.__player.VisibleCards[0]
                     lowest = opponent.VisibleCards[0]
                     
@@ -49,7 +49,7 @@ class AI(object):
                     self.__actions += 1
                     
                 if self.CanPlaceCard():
-                    highest = self.__player.hand[0]
+                    highest = self.__player.hand[random.randint(0, len(self.player.hand)-1)]
                     
                     for c in self.__player.VisibleCards:
                         if c.DP > highest.DP:
@@ -58,13 +58,11 @@ class AI(object):
                     self.__player.PutCard(highest)
                     self.__controller.AddAction(Actions.PLACE_CARD, card=highest)
                     self.__actions += 1
-                else:
-                    break
             except:
                 break
         try:
             r = random.randint(0,1000)
-            if r % 2 == 0:
+            if r % 7 == 0:
                 self.__player.DrawCard()
             else:
                 card = self.__player.hand[r % len(self.__player.hand)]
