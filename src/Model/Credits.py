@@ -16,13 +16,14 @@ class Credits(object):
     __license = None
 
     def __init__(self, *args, **kwargs):
-        self.__music = ["Matti Paalanen (https://www.jamendo.com/en/list/a145266/inspirational)"]
+        self.__music = ["Matti Paalanen (http://www.mattipaalanen.com/)"]
         self.__soundEffects = ["pepv (https://www.freesound.org/people/pepv/)", 
                                "oceanictrancer (https://www.freesound.org/people/oceanictrancer/)", 
                                "julesibulesi (https://www.freesound.org/people/julesibulesi/)", 
                                "Streety (https://www.freesound.org/people/Streety/)", 
                                "deraj (https://www.freesound.org/people/deraj/)", 
-                               "f4ngy (https://www.freesound.org/people/f4ngy/)"]
+                               "f4ngy (https://www.freesound.org/people/f4ngy/)",
+                               "chewiesmissus (https://www.freesound.org/people/chewiesmissus/)"]
         self.__source = ["Emil Carlsson (https://github.com/gingerswede)"]
         self.__images = ["Wikipedia (http://www.wikipedia.org/)",
                          "Little Visuals (http://littlevisuals.co/)",
