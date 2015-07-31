@@ -217,8 +217,8 @@ class Menu(object):
         attackCard.config(wraplength=800, justify=LEFT, pady=5, padx=5)
         
         #TODO: Fix the padding so it does not double.
-        placeCard = self.GenerateLabel(instructionFrame, "To place a card in the pool of visible cards, click on the card on your hand. Your hand is the row at the bottom to the left of your deck.")
-        placeCard.config(wraplength=800, justify=LEFT)
+        placeCard = self.GenerateLabel(instructionFrame, "To place a card in the pool of visible cards, click on the card you want to place that is on your hand. Your hand is the row at the bottom to the left of your deck.")
+        placeCard.config(wraplength=800, justify=LEFT, pady=5, padx=5)
         
         self.GenerateSecondLevelHeading(instructionFrame, "Action costs:")
         self.GenerateLabel(instructionFrame, "Draw new card: %d action points." % Player.Player.CARD_COST)

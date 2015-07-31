@@ -23,7 +23,14 @@ class AI(object):
         
     def MakeMove(self, opponent):
         self.__actions = 0
-        while self.__player.ActionPoints > 0:
+        
+        if self.__player.CardsLeft < 2 and self.__player.CanDrawCard: #force the AI to empty their deck.
+            self.__player.DrawCard()
+            self.__controller.AddAction(Actions.DRAW_CARD)
+            self.__actions += 1
+            
+        while self.__player.ActionPoints > self.__player.ATTACK_COST:
+            #to prevent an endless loop, the loop will only continue while at least one attack can be made
             try:
                 doAttack = random.randint(1,1000)
                 if self.CanAttack(opponent) and doAttack % 6 < 5: #random factor to not make it unbeatable
@@ -71,6 +78,7 @@ class AI(object):
                 self.__actions += 1
         except:
             pass
+        
         self.__player.EndTurn()
         
         if self.__actions == 0:
