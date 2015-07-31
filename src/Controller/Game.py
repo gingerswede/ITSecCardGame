@@ -157,8 +157,12 @@ class GameController(object):
                 self.__playerOne.Attack(self.__defender, self.__attacker)
                 self.__playerOne.ClearBoard()
                 self.__playerTwo.ClearBoard()
-                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+                
+                if not self.__defender.IsAlive or not self.__attacker.IsAlive:
+                    self.PlaySound(self.__sounds.Crash)
                     
+                self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
+                
                 self.__attacker = None
                 self.__defender = None
                 

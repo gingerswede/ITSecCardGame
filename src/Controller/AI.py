@@ -23,12 +23,13 @@ class AI(object):
         
     def MakeMove(self, opponent):
         self.__actions = 0
-        
-        if self.__player.CardsLeft < 2 and self.__player.CanDrawCard: #force the AI to empty their deck.
-            self.__player.DrawCard()
-            self.__controller.AddAction(Actions.DRAW_CARD)
-            self.__actions += 1
-            
+        try:
+            if self.__player.CardsLeft < 2 and self.__player.CanDrawCard: #force the AI to empty their deck.
+                self.__player.DrawCard()
+                self.__controller.AddAction(Actions.DRAW_CARD)
+                self.__actions += 1
+        except:
+            pass
         while self.__player.ActionPoints > self.__player.ATTACK_COST:
             #to prevent an endless loop, the loop will only continue while at least one attack can be made
             try:
@@ -99,7 +100,7 @@ class AI(object):
         return False
     
     def MustDrawCard(self):
-        if len(self.__player.hand) < 1:
+        if len(self.__player.hand) < 1 or (len(self.__player.VisibleCards) == self.__player.MAX_VISIBLE_CARDS and len(self.__player.hand) < self.__player.MAX_HAND_SIZE):
             return True
         else:
             return False

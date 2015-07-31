@@ -13,6 +13,11 @@ import os
 class Sounds(object):
     
     @property
+    def Crash(self):
+        path = os.path.join(os.path.abspath(os.getcwd()), "..", "sound", "crash.wav")
+        return path
+    
+    @property
     def CardFlip(self):
         path = os.path.join(os.path.abspath(os.getcwd()), "..", "sound", "card_flip.wav")
         return path
