@@ -57,6 +57,62 @@ class Board(object):
         
         self.__cardHeight = 275
         self.__cardWidth = 190
+        self.CreateGuiAreas()
+        '''
+        self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
+        
+        self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
+        self.__visibleCardsArea.grid(row=0, padx=self.__cardWidth)
+        
+        #Visible cards player one
+        self.__cardAreaPlayerOne = tk.Frame(self.__visibleCardsArea, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=((self.__root.winfo_width()-5)/4)*3, height=(self.__root.winfo_height()/3))
+        #Visible cards player two
+        self.__cardAreaPlayerTwo = tk.Frame(self.__visibleCardsArea, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=((self.__root.winfo_width()-5)/4)*3, height=(self.__root.winfo_height()/3))
+        
+        #Messages
+        self.__opponentInformationArea = tk.Frame(self.__visibleCardsArea, width=self.__root.winfo_width()/4, height=(self.__root.winfo_height()/3), background=Controller.Master.MasterController.BACKGROUND_COLOR)
+        self.__messageArea = tk.Frame(self.__visibleCardsArea, width=self.__root.winfo_width()/4, height=(self.__root.winfo_height()/3), background=Controller.Master.MasterController.BACKGROUND_COLOR)
+        
+        self.__cardAreaPlayerTwo.grid(row=0, column=0)
+        self.__cardAreaPlayerOne.grid(row=1, column=0)
+        self.__opponentInformationArea.grid(row=0, column=1)
+        self.__opponentInformationArea.grid_propagate(0)
+        self.__messageArea.grid(row=1, column=1)
+        self.__messageArea.grid_propagate(0)
+             
+        #Area with player information, deck, and cards on hand
+        self.__handArea = tk.Frame(self.__root, background=Controller.Master.MasterController.BACKGROUND_COLOR, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3))
+        self.__handArea.grid(row=1, column=0, columnspan=2, padx=0)
+        
+        #All cards on the hand not visible
+        self.__handCardArea = tk.Frame(self.__handArea, height=self.__cardHeight, bg=Controller.Master.MasterController.BACKGROUND_COLOR)
+        self.__handCardArea.pack(side=LEFT)
+        
+        #The purple square
+        self.__handDeckArea = tk.Frame(self.__handArea , height=self.__cardHeight, width=self.__cardWidth)
+        self.__handDeckArea.config(borderwidth=5, relief=RIDGE, background=Controller.Master.MasterController.DECK_COLOR)
+        self.__handDeckArea.pack(side=LEFT, padx=25)
+        self.__handDeckArea.bind("<Enter>", lambda e, area=self.__handDeckArea:self.MouseEnterArea(area))
+        self.__handDeckArea.bind("<Leave>", lambda e, area=self.__handDeckArea:self.MouseLeaveArea(area))
+        self.__handDeckArea.bind("<ButtonRelease-1>", lambda e:self.__controller.DrawCard())
+        
+        #AP, Cards left, etc
+        self.__playerInformationArea = tk.Frame(self.__handArea, width=self.__playerInfoWidth, height=self.__cardHeight)
+        self.__playerInformationArea.pack(side=RIGHT)
+        self.__playerInformationArea.config(background=Controller.Master.MasterController.BACKGROUND_COLOR, borderwidth=3)
+        self.__playerInformationArea.pack(side=RIGHT, padx=25)
+        '''
+        
+        self.DrawCards(self.__handCardArea, player.hand, player.MAX_HAND_SIZE)
+        
+        self.DrawCards(self.__cardAreaPlayerOne, player.VisibleCards, player.MAX_VISIBLE_CARDS)
+        
+        self.DrawCards(self.__cardAreaPlayerTwo, opponent.VisibleCards, opponent.MAX_VISIBLE_CARDS)
+        
+        self.PutPlayerInformation(player)
+        self.PutOpponentInformation(opponent)
+        
+    def CreateGuiAreas(self):
         self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
         
         self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
@@ -100,15 +156,6 @@ class Board(object):
         self.__playerInformationArea.config(background=Controller.Master.MasterController.BACKGROUND_COLOR, borderwidth=3)
         self.__playerInformationArea.pack(side=RIGHT, padx=25)
         
-        self.DrawCards(self.__handCardArea, player.hand, player.MAX_HAND_SIZE)
-        
-        self.DrawCards(self.__cardAreaPlayerOne, player.VisibleCards, player.MAX_VISIBLE_CARDS)
-        
-        self.DrawCards(self.__cardAreaPlayerTwo, opponent.VisibleCards, opponent.MAX_VISIBLE_CARDS)
-        
-        self.PutPlayerInformation(player)
-        self.PutOpponentInformation(opponent)
-        
     def PutPlayerInformation(self, player):
         GlobalFunc.RemoveAllChildren(self.__playerInformationArea)
         self.GenerateTextPair(self.PLAYER_INFO_ACTION_POINTS, player.ActionPoints, self.__playerInformationArea)
@@ -146,7 +193,12 @@ class Board(object):
                 cardSpot.bind("<Enter>", lambda e, area=cardSpot:self.MouseEnterArea(area))
                 cardSpot.bind("<Leave>", lambda e, area=cardSpot:self.MouseLeaveArea(area))
                 
-    def RefreshBoard(self, playerOne, playerTwo):        
+    def RefreshBoard(self, playerOne, playerTwo):
+        try:
+            GlobalFunc.RemoveAllChildren(self.__handCardArea)
+        except:
+            self.CreateGuiAreas()
+            
         self.DrawCards(self.__handCardArea, playerOne.hand, playerOne.MAX_HAND_SIZE)
         self.DrawCards(self.__cardAreaPlayerOne, playerOne.VisibleCards, playerOne.MAX_VISIBLE_CARDS)
         self.DrawCards(self.__cardAreaPlayerTwo, playerTwo.VisibleCards, playerTwo.MAX_VISIBLE_CARDS)

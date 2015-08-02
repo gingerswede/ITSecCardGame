@@ -43,6 +43,12 @@ class MenuController(object):
     def StartNewGame(self):
         self.__masterController.StartNewGame()
         
+    def ResumeGame(self):
+        self.__masterController.ResumeGame()
+        
+    def GameOngoing(self):
+        return self.__masterController.GameOngoing()
+        
     def Credits(self, *args, **kwargs):
         self.__masterController.ShowCredits()
         

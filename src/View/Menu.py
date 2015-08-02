@@ -24,6 +24,7 @@ class Menu(object):
     INFO_EXIT = "Exit (x)"
     EXIT = "Exit"
     BACK = "Back"
+    RESUME = "Resume"
     
     CREDITS_HEADING = "Credits"
     CREDITS_MUSIC = "Music"
@@ -66,6 +67,13 @@ class Menu(object):
         labelNewGame.config(font=("Arial Black", 20, BOLD))
         labelNewGame.bind("<Button-1>", lambda e:self.__controller.StartNewGame())
         labelNewGame.pack(fill=X, padx=10)
+        
+        if self.__controller.GameOngoing():
+            labelResume = tk.Label(menuFrame, text=self.RESUME, background=Controller.Master.MasterController.RED)
+            labelResume.config(font=("Arial Black", 20, BOLD))
+            labelResume.bind("<Button-1>", lambda e:self.__controller.ResumeGame())
+            labelResume.pack(fill=X, padx=10)
+        
             
         labelSettings = tk.Label(menuFrame, text=self.SETTINGS, background=Controller.Master.MasterController.RED)
         labelSettings.config(font=("Arial Black", 20, BOLD))

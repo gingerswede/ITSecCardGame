@@ -13,7 +13,7 @@ class Settings(object):
     __music = None
 
     def __init__(self, *args, **kwargs):
-        self.__music = True
+        self.__music = False
         
     @property
     def Music(self):
