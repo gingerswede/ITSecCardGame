@@ -9,6 +9,7 @@ Operating system: Windows 8.1
 '''
 import random
 from Model.Actions import Actions
+from Model.Exceptions import OutOfMovesError
 
 class AI(object):
     
@@ -23,6 +24,7 @@ class AI(object):
         
     def MakeMove(self, opponent):
         self.__actions = 0
+        counter = 0
         try:
             if self.__player.CardsLeft < 2 and self.__player.CanDrawCard: #force the AI to empty their deck.
                 self.__player.DrawCard()
@@ -31,6 +33,8 @@ class AI(object):
         except:
             pass
         while self.__player.ActionPoints > self.__player.ATTACK_COST:
+            if counter > 3:
+                break
             #to prevent an endless loop, the loop will only continue while at least one attack can be made
             try:
                 doAttack = random.randint(1,1000)
