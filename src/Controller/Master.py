@@ -30,12 +30,15 @@ class MasterController(object):
     __gameController = None
     
     __root = None
+    __player = None
     
     __mixer = None
     __sounds = None
     __settings = None
     
-    def __init__(self, root):        
+    def __init__(self, root):
+        self.__player = Player.Player()
+        
         self.__root = root
         
         self.__settings = Settings.Settings()
@@ -50,7 +53,7 @@ class MasterController(object):
         self.__viewArea.pack(pady=10, padx=10, fill=BOTH, expand=True)
         
         self.__menuController = MenuController.MenuController(self.__viewArea, self)
-        self.__gameController = GameController.GameController(self.__viewArea, self)
+        self.__gameController = GameController.GameController(self.__viewArea, self.__player, self)
         
         self.__menuController.DisplayBasicMenu(self.__menuArea)
         
@@ -62,12 +65,6 @@ class MasterController(object):
         self.__mixer.init()
         
         self.OpenMenu()
-        
-    def ResumeGame(self):
-        self.__gameController.Resume()
-        
-    def GameOngoing(self):
-        return self.__gameController.ActiveGame
         
     def ShowCredits(self, *args, **kwargs):
         self.__mixer.stop()

@@ -55,22 +55,8 @@ class Board(object):
         self.__root.grid_propagate(0)
         self.__controller = controller
         
-        self.__cardHeight = self.__root.winfo_height() * 0.27
-        
-        self.__cardWidth = self.__root.winfo_width() * 0.11
-        
-        self.CreateGuiAreas()
-        
-        self.DrawCards(self.__handCardArea, player.hand, player.MAX_HAND_SIZE)
-        
-        self.DrawCards(self.__cardAreaPlayerOne, player.VisibleCards, player.MAX_VISIBLE_CARDS)
-        
-        self.DrawCards(self.__cardAreaPlayerTwo, opponent.VisibleCards, opponent.MAX_VISIBLE_CARDS)
-        
-        self.PutPlayerInformation(player)
-        self.PutOpponentInformation(opponent)
-        
-    def CreateGuiAreas(self):
+        self.__cardHeight = 275
+        self.__cardWidth = 190
         self.__playerInfoWidth = self.__root.winfo_width() - (self.__cardWidth*6)
         
         self.__visibleCardsArea = tk.Frame(self.__root, width=self.__root.winfo_width(), height=(self.__root.winfo_height()/3)*2, background=Controller.Master.MasterController.BACKGROUND_COLOR)
@@ -114,6 +100,15 @@ class Board(object):
         self.__playerInformationArea.config(background=Controller.Master.MasterController.BACKGROUND_COLOR, borderwidth=3)
         self.__playerInformationArea.pack(side=RIGHT, padx=25)
         
+        self.DrawCards(self.__handCardArea, player.hand, player.MAX_HAND_SIZE)
+        
+        self.DrawCards(self.__cardAreaPlayerOne, player.VisibleCards, player.MAX_VISIBLE_CARDS)
+        
+        self.DrawCards(self.__cardAreaPlayerTwo, opponent.VisibleCards, opponent.MAX_VISIBLE_CARDS)
+        
+        self.PutPlayerInformation(player)
+        self.PutOpponentInformation(opponent)
+        
     def PutPlayerInformation(self, player):
         GlobalFunc.RemoveAllChildren(self.__playerInformationArea)
         self.GenerateTextPair(self.PLAYER_INFO_ACTION_POINTS, player.ActionPoints, self.__playerInformationArea)
@@ -151,12 +146,7 @@ class Board(object):
                 cardSpot.bind("<Enter>", lambda e, area=cardSpot:self.MouseEnterArea(area))
                 cardSpot.bind("<Leave>", lambda e, area=cardSpot:self.MouseLeaveArea(area))
                 
-    def RefreshBoard(self, playerOne, playerTwo):
-        try:
-            GlobalFunc.RemoveAllChildren(self.__handCardArea)
-        except:
-            self.CreateGuiAreas()
-            
+    def RefreshBoard(self, playerOne, playerTwo):        
         self.DrawCards(self.__handCardArea, playerOne.hand, playerOne.MAX_HAND_SIZE)
         self.DrawCards(self.__cardAreaPlayerOne, playerOne.VisibleCards, playerOne.MAX_VISIBLE_CARDS)
         self.DrawCards(self.__cardAreaPlayerTwo, playerTwo.VisibleCards, playerTwo.MAX_VISIBLE_CARDS)

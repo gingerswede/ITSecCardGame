@@ -38,7 +38,6 @@ class GameController(object):
     __imgPath = None
     __delay = 2
     __waiting = False
-    __onGoingGame = False
     
     __actionWinner = "winner"
     __actionAttacker = "attacker"
@@ -50,28 +49,17 @@ class GameController(object):
     PLACE_CARD = "Your opponent placed the card %s.\n---"
     PASS = "Your opponent passed this turn."
     
-    def __init__(self, root, masterController):
+    def __init__(self, root, player, masterController):
         self.__root = root
-            
+        self.__playerOne = player
         self.__masterController = masterController
         self.__gameView = GameView.GameView(root, self)
         self.__imgPath = os.path.join(os.path.abspath(os.getcwd()), "..", "img")
         self.__sounds = Sound()
         self.__cardFactory = CardFactory()
         self.__actionMessages = []
-        self.__onGoingGame = False
-        
-    @property
-    def ActiveGame(self):
-        return self.__onGoingGame
-        
-    def Resume(self):
-        self.__gameView.RefreshBoard(self.__playerOne, self.__playerTwo)
-        self.__gameView.ResetInformation()
         
     def StartNewGame(self):
-        self.__onGoingGame = True
-        
         p1d = self.__cardFactory.GetDeck(10)
         p1d.Shuffle()
         p2d = self.__cardFactory.GetDeck(10)
@@ -141,13 +129,10 @@ class GameController(object):
             
             if self.__playerOne.CardsLeft == 0 and len(self.__playerOne.hand) == 0 and len(self.__playerOne.VisibleCards) == 0:
                 self.__gameView.PlayerLost()
-                self.__onGoingGame = False
             elif self.__playerTwo.CardsLeft == 0 and len(self.__playerTwo.hand) == 0 and len(self.__playerTwo.VisibleCards) == 0:
                 self.__gameView.PlayerWon()
-                self.__onGoingGame = False
         else:
-            pass
-        
+            pass   
     def PlayCard(self, card):
         if not self.__waiting:
             try:
@@ -166,7 +151,6 @@ class GameController(object):
                 self.__gameView.MaxVisibleHandSize()
         else:
             pass
-        
     def PerformBattle(self):
         if not self.__waiting:
             try:
@@ -185,8 +169,7 @@ class GameController(object):
             except OutOfMovesError:
                 self.__gameView.OutOfMoves()
         else:
-            pass
-    
+            pass    
     def AddAction(self, action, *args, **kwargs):
         if action == Actions.ATTACK:
             winner = None
